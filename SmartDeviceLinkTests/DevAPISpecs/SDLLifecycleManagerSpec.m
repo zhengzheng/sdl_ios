@@ -79,7 +79,7 @@ describe(@"a lifecycle manager", ^{
         testManager.permissionManager = permissionManagerMock;
     });
     
-    it(@"should initialize properties", ^{
+    fit(@"should initialize properties", ^{
         expect(testManager.configuration).to(equal(testConfig));
         expect(testManager.delegate).to(equal(managerDelegateMock)); // TODO: Broken on OCMock 3.3.1 & Swift 3 Quick / Nimble
         expect(testManager.lifecycleState).to(match(SDLLifecycleStateDisconnected));
