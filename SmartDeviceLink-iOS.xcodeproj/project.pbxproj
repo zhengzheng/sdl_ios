@@ -940,6 +940,8 @@
 		5DF2BB9D1B94E38A00CE5994 /* SDLURLSessionSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DF2BB9C1B94E38A00CE5994 /* SDLURLSessionSpec.m */; };
 		5DFFB9151BD7C89700DB3F04 /* SDLConnectionManagerType.h in Headers */ = {isa = PBXBuildFile; fileRef = 5DFFB9141BD7C89700DB3F04 /* SDLConnectionManagerType.h */; };
 		8872772F1F33542000368CCD /* SDLSendHapticDataResponseSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8872772E1F33542000368CCD /* SDLSendHapticDataResponseSpec.m */; };
+		88C3CA891F505395002801D7 /* ParseVehicleData.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C3CA881F505395002801D7 /* ParseVehicleData.m */; };
+		88C3CA8C1F50986A002801D7 /* TemplateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C3CA8B1F50986A002801D7 /* TemplateManager.m */; };
 		88E0719B1F3221F000C9CB2F /* SDLHapticRect.h in Headers */ = {isa = PBXBuildFile; fileRef = 88E071991F3221F000C9CB2F /* SDLHapticRect.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88E0719C1F3221F000C9CB2F /* SDLHapticRect.m in Sources */ = {isa = PBXBuildFile; fileRef = 88E0719A1F3221F000C9CB2F /* SDLHapticRect.m */; };
 		88E0719F1F322C3100C9CB2F /* SDLSendHapticData.h in Headers */ = {isa = PBXBuildFile; fileRef = 88E0719D1F322C3100C9CB2F /* SDLSendHapticData.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2063,6 +2065,10 @@
 		5DF2BB9C1B94E38A00CE5994 /* SDLURLSessionSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLURLSessionSpec.m; path = "UtilitiesSpecs/HTTP Connection/SDLURLSessionSpec.m"; sourceTree = "<group>"; };
 		5DFFB9141BD7C89700DB3F04 /* SDLConnectionManagerType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLConnectionManagerType.h; sourceTree = "<group>"; };
 		8872772E1F33542000368CCD /* SDLSendHapticDataResponseSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLSendHapticDataResponseSpec.m; sourceTree = "<group>"; };
+		88C3CA871F505395002801D7 /* ParseVehicleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseVehicleData.h; sourceTree = SOURCE_ROOT; };
+		88C3CA881F505395002801D7 /* ParseVehicleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseVehicleData.m; sourceTree = SOURCE_ROOT; };
+		88C3CA8A1F50986A002801D7 /* TemplateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateManager.h; sourceTree = SOURCE_ROOT; };
+		88C3CA8B1F50986A002801D7 /* TemplateManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateManager.m; sourceTree = SOURCE_ROOT; };
 		88E071991F3221F000C9CB2F /* SDLHapticRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLHapticRect.h; sourceTree = "<group>"; };
 		88E0719A1F3221F000C9CB2F /* SDLHapticRect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLHapticRect.m; sourceTree = "<group>"; };
 		88E0719D1F322C3100C9CB2F /* SDLSendHapticData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLSendHapticData.h; sourceTree = "<group>"; };
@@ -2757,6 +2763,10 @@
 			children = (
 				5D48329F1A92868E00252386 /* ProxyManager.h */,
 				5D4832A01A92868E00252386 /* ProxyManager.m */,
+				88C3CA871F505395002801D7 /* ParseVehicleData.h */,
+				88C3CA881F505395002801D7 /* ParseVehicleData.m */,
+				88C3CA8A1F50986A002801D7 /* TemplateManager.h */,
+				88C3CA8B1F50986A002801D7 /* TemplateManager.m */,
 			);
 			name = SDL;
 			sourceTree = "<group>";
@@ -4782,10 +4792,12 @@
 			files = (
 				5D4832A51A94F90D00252386 /* ConnectionTransitionContext.m in Sources */,
 				5D0218FC1A8E7E1700D1BF62 /* ConnectionContainerViewController.m in Sources */,
+				88C3CA891F505395002801D7 /* ParseVehicleData.m in Sources */,
 				5D0218FF1A8E9E0D00D1BF62 /* ConnectionIAPTableViewController.m in Sources */,
 				5D48329D1A8EA33D00252386 /* Preferences.m in Sources */,
 				5D59350F1A855EB300687FB9 /* AppDelegate.m in Sources */,
 				5D5935121A855EBE00687FB9 /* main.m in Sources */,
+				88C3CA8C1F50986A002801D7 /* TemplateManager.m in Sources */,
 				5D4832A81A95191B00252386 /* ConnectionAnimatedTransition.m in Sources */,
 				5D4832A11A92868E00252386 /* ProxyManager.m in Sources */,
 				5D0218F61A8E79C400D1BF62 /* ConnectionTCPTableViewController.m in Sources */,

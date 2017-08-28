@@ -3,11 +3,10 @@
 //  SmartDeviceLink-iOS
 
 #import "SmartDeviceLink.h"
-
 #import "ProxyManager.h"
-
 #import "Preferences.h"
-
+#import "SDLDebugTool.h"
+#import "TemplateManager.h"
 
 NSString *const SDLAppName = @"SDL Example App";
 NSString *const SDLAppId = @"9999";
@@ -195,7 +194,8 @@ NS_ASSUME_NONNULL_BEGIN
     config.appIcon = appIconArt;
     config.voiceRecognitionCommandNames = @[@"S D L Example"];
     config.ttsName = [SDLTTSChunk textChunksFromString:config.shortAppName];
-
+    config.appType = SDLAppHMIType.MEDIA;
+    
     return config;
 }
 
@@ -209,7 +209,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - RPC builders
 
-+ (SDLAddCommand *)sdlex_speakNameCommandWithManager:(SDLManager *)manager {
++ (SDLAddCommand *)sdlex_speakNameCommandWithManager:(SDLManager *)manager commandId:(int)commandId {
     NSString *commandName = @"Speak App Name";
     
     SDLMenuParams *commandMenuParams = [[SDLMenuParams alloc] init];
@@ -218,7 +218,7 @@ NS_ASSUME_NONNULL_BEGIN
     SDLAddCommand *speakNameCommand = [[SDLAddCommand alloc] init];
     speakNameCommand.vrCommands = [NSMutableArray arrayWithObject:commandName];
     speakNameCommand.menuParams = commandMenuParams;
-    speakNameCommand.cmdID = @0;
+    speakNameCommand.cmdID = @(commandId);
     
     speakNameCommand.handler = ^void(SDLOnCommand *notification) {
         [manager sendRequest:[self.class sdlex_appNameSpeak]];
@@ -227,7 +227,7 @@ NS_ASSUME_NONNULL_BEGIN
     return speakNameCommand;
 }
 
-+ (SDLAddCommand *)sdlex_interactionSetCommandWithManager:(SDLManager *)manager {
++ (SDLAddCommand *)sdlex_interactionSetCommandWithManager:(SDLManager *)manager commandId:(int)commandId {
     NSString *commandName = @"Perform Interaction";
     
     SDLMenuParams *commandMenuParams = [[SDLMenuParams alloc] init];
@@ -236,7 +236,7 @@ NS_ASSUME_NONNULL_BEGIN
     SDLAddCommand *performInteractionCommand = [[SDLAddCommand alloc] init];
     performInteractionCommand.vrCommands = [NSMutableArray arrayWithObject:commandName];
     performInteractionCommand.menuParams = commandMenuParams;
-    performInteractionCommand.cmdID = @1;
+    performInteractionCommand.cmdID = @(commandId);
     
     // NOTE: You may want to preload your interaction sets, because they can take a while for the remote system to process. We're going to ignore our own advice here.
     __weak typeof(self) weakSelf = self;
@@ -247,14 +247,14 @@ NS_ASSUME_NONNULL_BEGIN
     return performInteractionCommand;
 }
 
-+ (SDLAddCommand *)sdlex_vehicleDataCommandWithManager:(SDLManager *)manager {
++ (SDLAddCommand *)sdlex_vehicleDataCommandWithManager:(SDLManager *)manager commandId:(int)commandId {
     SDLMenuParams *commandMenuParams = [[SDLMenuParams alloc] init];
     commandMenuParams.menuName = @"Get Vehicle Data";
 
     SDLAddCommand *getVehicleDataCommand = [[SDLAddCommand alloc] init];
     getVehicleDataCommand.vrCommands = [NSMutableArray arrayWithObject:@"Get Vehicle Data"];
     getVehicleDataCommand.menuParams = commandMenuParams;
-    getVehicleDataCommand.cmdID = @2;
+    getVehicleDataCommand.cmdID = @(commandId);
 
     getVehicleDataCommand.handler = ^void(SDLOnCommand *notification) {
         [ProxyManager sdlex_sendGetVehicleDataWithManager:manager];
@@ -262,6 +262,35 @@ NS_ASSUME_NONNULL_BEGIN
 
     return getVehicleDataCommand;
 }
+
++ (SDLAddSubMenu *)sdlex_changeTemplateAddSubmenuWithManager:(SDLManager *)manager commandId:(int)commandId {
+    return [[SDLAddSubMenu alloc] initWithId:commandId menuName:@"Change the Template"];
+}
+
++ (NSArray<SDLAddCommand *> *)sdlex_templateNamesCommandWithManager:(SDLManager *)manager parentCommandId:(int)parentCommandId startingCommandId:(int)startingCommandId {
+    int commandId = startingCommandId;
+    NSMutableArray<SDLAddCommand *> *templatesAddCommands = [NSMutableArray array];
+    for(SDLPredefinedLayout *template in SDLPredefinedLayout.values) {
+        SDLMenuParams *commandMenuParams = [[SDLMenuParams alloc] init];
+        commandMenuParams.menuName = [NSString stringWithFormat:@"%@", template];
+        commandMenuParams.parentID = @(parentCommandId);
+
+        SDLAddCommand *changeTemplateCommand = [[SDLAddCommand alloc] init];
+        changeTemplateCommand.vrCommands = [NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%@", template]];
+        changeTemplateCommand.menuParams = commandMenuParams;
+        changeTemplateCommand.cmdID = @(commandId++);
+
+        changeTemplateCommand.handler = ^(__kindof SDLRPCNotification * _Nonnull notification) {
+            [TemplateManager changeTemplateWithManager:manager forTemplate:template image:[self.class sdlex_mainGraphicImage]];
+        };
+
+        [templatesAddCommands addObject:changeTemplateCommand];
+    }
+
+    return templatesAddCommands;
+}
+
+
 
 + (SDLSpeak *)sdlex_appNameSpeak {
     SDLSpeak *speak = [[SDLSpeak alloc] init];
@@ -359,7 +388,6 @@ NS_ASSUME_NONNULL_BEGIN
     }];
 }
 
-
 #pragma mark - Files / Artwork
 
 + (SDLArtwork *)sdlex_pointingSoftButtonArtwork {
@@ -371,10 +399,19 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)sdlex_prepareRemoteSystem {
-    [self.sdlManager sendRequest:[self.class sdlex_speakNameCommandWithManager:self.sdlManager]];
-    [self.sdlManager sendRequest:[self.class sdlex_interactionSetCommandWithManager:self.sdlManager]];
-    [self.sdlManager sendRequest:[self.class sdlex_vehicleDataCommandWithManager:self.sdlManager]];
-    
+    [self.sdlManager sendRequest:[self.class sdlex_speakNameCommandWithManager:self.sdlManager commandId:0]];
+    [self.sdlManager sendRequest:[self.class sdlex_interactionSetCommandWithManager:self.sdlManager commandId:1]];
+    [self.sdlManager sendRequest:[self.class sdlex_vehicleDataCommandWithManager:self.sdlManager commandId:2]];
+    [self.sdlManager sendRequest:[self.class sdlex_changeTemplateAddSubmenuWithManager:self.sdlManager commandId:3] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        if([[response resultCode] isEqualToEnum:SDLResult.SUCCESS]) {
+            for (SDLAddCommand *addCommand in [self.class sdlex_templateNamesCommandWithManager:self.sdlManager parentCommandId:3 startingCommandId:4]) {
+                [self.sdlManager sendRequest:addCommand];
+            }
+        } else {
+            [SDLDebugTool logInfo:@"The submenu was not created successfully"];
+        }
+    }];
+
     dispatch_group_t dataDispatchGroup = dispatch_group_create();
     dispatch_group_enter(dataDispatchGroup);
 
