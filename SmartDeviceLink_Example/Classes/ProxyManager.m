@@ -256,6 +256,55 @@ NS_ASSUME_NONNULL_BEGIN
     [manager sendRequest:alert];
 }
 
++ (void)sdlex_setGlobalProperties:(SDLManager *)manager {
+    SDLSetGlobalProperties *globalProperties = [[SDLSetGlobalProperties alloc] init];
+
+    SDLTTSChunk* chunk1 = [[SDLTTSChunk alloc] init];
+    SDLTTSChunk* chunk2 = [[SDLTTSChunk alloc] init];
+    SDLVRHelpItem* help = [[SDLVRHelpItem alloc] init];
+    SDLImage* image = [[SDLImage alloc] init];
+    SDLKeyboardProperties* keyboard = [[SDLKeyboardProperties alloc] init];
+
+    globalProperties.helpPrompt = [@[chunk1] mutableCopy];
+    globalProperties.timeoutPrompt = [@[chunk2] mutableCopy];
+    globalProperties.vrHelpTitle = @"vr";
+    globalProperties.vrHelp = [@[help] mutableCopy];
+    globalProperties.menuTitle = @"TheNewMenu";
+    globalProperties.menuIcon = image;
+    globalProperties.keyboardProperties = keyboard;
+
+    [manager sendRequest:globalProperties withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Set Global Properties RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_showReadDID:(SDLManager *)manager {
+    SDLReadDID *readDid = [[SDLReadDID alloc] init];
+    readDid.ecuName = @33112;
+    readDid.didLocation = [@[@200, @201, @205] mutableCopy];
+
+    [manager sendRequest:readDid withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Show Read DID RPC sent. Response: %@", response.resultCode]];
+        NSLog(@"Show Read DID response: %@", response);
+    }];
+}
+
++ (void)sdlex_resetGlobalProperties:(SDLManager *)manager {
+    SDLResetGlobalProperties *resetGlobalProperties = [[SDLResetGlobalProperties alloc] init];
+    resetGlobalProperties.properties = [@[[SDLGlobalProperty MENUNAME], [SDLGlobalProperty VRHELPTITLE]] copy];
+
+    [manager sendRequest:resetGlobalProperties withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Reset Global Properties RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_showConstantTBT:(SDLManager *)manager {
+    SDLShowConstantTBT *constant = [[SDLShowConstantTBT alloc] init];
+    [manager sendRequest:constant withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Show Constant RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
 + (void)sdlex_unRegisterAppInterface:(SDLManager *)manager {
     SDLUnregisterAppInterface *unRegisterAppInterface = [[SDLUnregisterAppInterface alloc] init];
     [manager sendRequest:unRegisterAppInterface withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
@@ -263,11 +312,60 @@ NS_ASSUME_NONNULL_BEGIN
     }];
 }
 
++ (void)sdlex_subscribeVehicleData:(SDLManager *)manager {
+    SDLSubscribeVehicleData *subscribeVehicleData = [[SDLSubscribeVehicleData alloc] initWithAccelerationPedalPosition:YES airbagStatus:YES beltStatus:YES bodyInformation:YES clusterModeStatus:YES deviceStatus:YES driverBraking:YES eCallInfo:YES emergencyEvent:YES engineTorque:YES externalTemperature:YES fuelLevel:YES fuelLevelState:YES gps:YES headLampStatus:YES instantFuelConsumption:YES myKey:YES odometer:YES prndl:YES rpm:YES speed:YES steeringWheelAngle:YES tirePressure:YES wiperStatus:YES];
+    [manager sendRequest:subscribeVehicleData withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Subscribe Vehicle Data RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
 + (void)sdlex_unsubscribeVehicleData:(SDLManager *)manager {
     SDLUnsubscribeVehicleData *unsubscribeVehicleData = [[SDLUnsubscribeVehicleData alloc] init];
-
     [manager sendRequest:unsubscribeVehicleData withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
         [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Unsubscribe Vehicle Data RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_syncPData:(SDLManager *)manager {
+    SDLSyncPData *pData = [[SDLSyncPData alloc] init];
+    [manager sendRequest:pData withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Sync P Data RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_sendLocation:(SDLManager *)manager {
+    SDLSendLocation *sendLocation = [[SDLSendLocation alloc] init];
+    NSNumber *someLongitude = @123.4567;
+    NSNumber *someLatitude = @65.4321;
+    NSString *someLocation = @"Livio";
+    NSString *someLocationDescription = @"A great place to work";
+    NSArray *someAddressLines = @[@"3136 Hilton Rd", @"Ferndale, MI", @"48220"];
+    NSString *somePhoneNumber = @"248-591-0333";
+    SDLImage *someImage = [[SDLImage alloc] init];
+    SDLDeliveryMode *someDeliveryMode = [SDLDeliveryMode PROMPT];
+    SDLDateTime *someTime = [[SDLDateTime alloc] init];
+    SDLOasisAddress *someAddress = [[SDLOasisAddress alloc] init];
+
+    sendLocation.longitudeDegrees = someLongitude;
+    sendLocation.latitudeDegrees = someLatitude;
+    sendLocation.locationName = someLocation;
+    sendLocation.locationDescription = someLocationDescription;
+    sendLocation.addressLines = someAddressLines;
+    sendLocation.phoneNumber = somePhoneNumber;
+    sendLocation.locationImage = someImage;
+    sendLocation.deliveryMode = someDeliveryMode;
+    sendLocation.timeStamp = someTime;
+    sendLocation.address = someAddress;
+
+    [manager sendRequest:sendLocation withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Send Location RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_endAudioPassThru:(SDLManager *)manager {
+    SDLEndAudioPassThru *endAudioPassThru = [[SDLEndAudioPassThru alloc] init];
+    [manager sendRequest:endAudioPassThru withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"End Audio Pass Thru RPC sent. Response: %@", response.resultCode]];
     }];
 }
 
@@ -283,10 +381,17 @@ NS_ASSUME_NONNULL_BEGIN
     }];
 }
 
++ (void)sdlex_subscribeWaypoints:(SDLManager *)manager {
+    SDLSubscribeWayPoints *wayPoints = [[SDLSubscribeWayPoints alloc] init];
+    [manager sendRequest:wayPoints withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Subscribe Waypoints RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
 + (void)sdlex_getWaypoints:(SDLManager *)manager {
     SDLGetWayPoints *wayPoints = [[SDLGetWayPoints alloc] initWithType:SDLWaypointType.ALL];
     [manager sendRequest:wayPoints withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Waypoints RPC sent. Response: %@", response.resultCode]];
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Get Waypoints RPC sent. Response: %@", response.resultCode]];
     }];
 }
 
@@ -318,7 +423,7 @@ NS_ASSUME_NONNULL_BEGIN
     SDLEncodedSyncPData *data = [[SDLEncodedSyncPData alloc] init];
     data.data = [@[@2, @2, @2] mutableCopy];
     [manager sendRequest:data withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Dial Number RPC Sent. Response: %@", response.resultCode]];
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Encode Sync P Data RPC sent. Response: %@", response.resultCode]];
     }];
 }
 
@@ -571,9 +676,6 @@ NS_ASSUME_NONNULL_BEGIN
         [self.class sdlex_sendPerformOnlyChoiceInteractionWithManager:self.sdlManager];
     }] withResponseHandler:nil];
 
-    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Get Vehicle Data" handler:^{
-        [self.class sdlex_sendGetVehicleDataWithManager:self.sdlManager];
-    }] withResponseHandler:nil];
 
     [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Show Slider" handler:^{
         [self.class sdlex_createSliderWithManager:self.sdlManager];
@@ -585,10 +687,6 @@ NS_ASSUME_NONNULL_BEGIN
 
     [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Alert" handler:^{
         [self.class sdlex_createAlertWithManager:self.sdlManager];
-    }] withResponseHandler:nil];
-
-    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Alert Maneuver" handler:^{
-        [self.class sdlex_createAlertManeuverWithManager:self.sdlManager];
     }] withResponseHandler:nil];
 
     [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Scrollable Message" handler:^{
@@ -611,10 +709,6 @@ NS_ASSUME_NONNULL_BEGIN
         [self.class sdlex_dialNumber:self.sdlManager];
     }]];
 
-    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Encoded Sync P Data" handler:^{
-        [self.class sdlex_encodedSyncPData:self.sdlManager];
-    }]];
-
     [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Get DTCs" handler:^{
         [self.class sdlex_getDTCs:self.sdlManager];
     }]];
@@ -626,20 +720,60 @@ NS_ASSUME_NONNULL_BEGIN
     [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Get Waypoints" handler:^{
         [self.class sdlex_getWaypoints:self.sdlManager];
     }]];
-
-    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Unregister App Interface" handler:^{
-        [self.class sdlex_unRegisterAppInterface:self.sdlManager];
-    }]];
-    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Unsubscribe Vehicle Data" handler:^{
-        [self.class sdlex_unsubscribeVehicleData:self.sdlManager];
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Subscribe Waypoints" handler:^{
+        [self.class sdlex_subscribeWaypoints:self.sdlManager];
     }]];
     [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Unsubscribe Waypoints" handler:^{
         [self.class sdlex_unsubscribeWaypoints:self.sdlManager];
     }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Unregister App Interface" handler:^{
+        [self.class sdlex_unRegisterAppInterface:self.sdlManager];
+    }]];
+
     [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Update Turn List" handler:^{
         [self.class sdlex_updateTurnList:self.sdlManager];
     }]];
 
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Sync P Data" handler:^{
+        [self.class sdlex_syncPData:self.sdlManager];
+    }]];
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Encoded Sync P Data" handler:^{
+        [self.class sdlex_encodedSyncPData:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"End Audio Pass Thru" handler:^{
+        [self.class sdlex_endAudioPassThru:self.sdlManager];
+    }]];
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Send Location" handler:^{
+        [self.class sdlex_sendLocation:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Get Vehicle Data" handler:^{
+        [self.class sdlex_sendGetVehicleDataWithManager:self.sdlManager];
+    }] withResponseHandler:nil];
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Subscribe Vehicle Data" handler:^{
+        [self.class sdlex_subscribeVehicleData:self.sdlManager];
+    }]];
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Unsubscribe Vehicle Data" handler:^{
+        [self.class sdlex_unsubscribeVehicleData:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Show Constant TBT" handler:^{
+        [self.class sdlex_showConstantTBT:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Reset Global Properties" handler:^{
+        [self.class sdlex_resetGlobalProperties:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Show Read DID" handler:^{
+        [self.class sdlex_showReadDID:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Set Global Properties" handler:^{
+        [self.class sdlex_setGlobalProperties:self.sdlManager];
+    }]];
 
     int parentMenuId = (commandId++);
     [self.sdlManager sendRequest:[self.class sdlex_changeTemplateAddSubmenuWithManager:self.sdlManager commandId:parentMenuId] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
