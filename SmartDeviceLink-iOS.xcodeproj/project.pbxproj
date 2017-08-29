@@ -939,8 +939,12 @@
 		5DEE55C01B8509CB004F0D0F /* SDLURLRequestTaskSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEE55BF1B8509CB004F0D0F /* SDLURLRequestTaskSpec.m */; };
 		5DF2BB9D1B94E38A00CE5994 /* SDLURLSessionSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DF2BB9C1B94E38A00CE5994 /* SDLURLSessionSpec.m */; };
 		5DFFB9151BD7C89700DB3F04 /* SDLConnectionManagerType.h in Headers */ = {isa = PBXBuildFile; fileRef = 5DFFB9141BD7C89700DB3F04 /* SDLConnectionManagerType.h */; };
+		884621281F54E1AB00E25F01 /* SoftButtonManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 884621271F54E1AB00E25F01 /* SoftButtonManager.m */; };
+		8846212B1F54E34200E25F01 /* SubscribeButtonManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8846212A1F54E34200E25F01 /* SubscribeButtonManager.m */; };
+		8846212E1F54E4FF00E25F01 /* MediaClockTimerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8846212D1F54E4FF00E25F01 /* MediaClockTimerManager.m */; };
+		884621311F54E5D100E25F01 /* AddCommandManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 884621301F54E5D100E25F01 /* AddCommandManager.m */; };
+		884621341F54E68E00E25F01 /* ShowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 884621331F54E68E00E25F01 /* ShowManager.m */; };
 		8872772F1F33542000368CCD /* SDLSendHapticDataResponseSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8872772E1F33542000368CCD /* SDLSendHapticDataResponseSpec.m */; };
-		88C3CA891F505395002801D7 /* ParseVehicleData.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C3CA881F505395002801D7 /* ParseVehicleData.m */; };
 		88C3CA8C1F50986A002801D7 /* TemplateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 88C3CA8B1F50986A002801D7 /* TemplateManager.m */; };
 		88E0719B1F3221F000C9CB2F /* SDLHapticRect.h in Headers */ = {isa = PBXBuildFile; fileRef = 88E071991F3221F000C9CB2F /* SDLHapticRect.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88E0719C1F3221F000C9CB2F /* SDLHapticRect.m in Sources */ = {isa = PBXBuildFile; fileRef = 88E0719A1F3221F000C9CB2F /* SDLHapticRect.m */; };
@@ -2064,9 +2068,17 @@
 		5DEE55BF1B8509CB004F0D0F /* SDLURLRequestTaskSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLURLRequestTaskSpec.m; path = "UtilitiesSpecs/HTTP Connection/SDLURLRequestTaskSpec.m"; sourceTree = "<group>"; };
 		5DF2BB9C1B94E38A00CE5994 /* SDLURLSessionSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLURLSessionSpec.m; path = "UtilitiesSpecs/HTTP Connection/SDLURLSessionSpec.m"; sourceTree = "<group>"; };
 		5DFFB9141BD7C89700DB3F04 /* SDLConnectionManagerType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLConnectionManagerType.h; sourceTree = "<group>"; };
+		884621261F54E1AB00E25F01 /* SoftButtonManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoftButtonManager.h; sourceTree = SOURCE_ROOT; };
+		884621271F54E1AB00E25F01 /* SoftButtonManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoftButtonManager.m; sourceTree = SOURCE_ROOT; };
+		884621291F54E34200E25F01 /* SubscribeButtonManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubscribeButtonManager.h; sourceTree = SOURCE_ROOT; };
+		8846212A1F54E34200E25F01 /* SubscribeButtonManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubscribeButtonManager.m; sourceTree = SOURCE_ROOT; };
+		8846212C1F54E4FF00E25F01 /* MediaClockTimerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaClockTimerManager.h; sourceTree = SOURCE_ROOT; };
+		8846212D1F54E4FF00E25F01 /* MediaClockTimerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaClockTimerManager.m; sourceTree = SOURCE_ROOT; };
+		8846212F1F54E5D100E25F01 /* AddCommandManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddCommandManager.h; sourceTree = SOURCE_ROOT; };
+		884621301F54E5D100E25F01 /* AddCommandManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddCommandManager.m; sourceTree = SOURCE_ROOT; };
+		884621321F54E68E00E25F01 /* ShowManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShowManager.h; sourceTree = SOURCE_ROOT; };
+		884621331F54E68E00E25F01 /* ShowManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShowManager.m; sourceTree = SOURCE_ROOT; };
 		8872772E1F33542000368CCD /* SDLSendHapticDataResponseSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLSendHapticDataResponseSpec.m; sourceTree = "<group>"; };
-		88C3CA871F505395002801D7 /* ParseVehicleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseVehicleData.h; sourceTree = SOURCE_ROOT; };
-		88C3CA881F505395002801D7 /* ParseVehicleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseVehicleData.m; sourceTree = SOURCE_ROOT; };
 		88C3CA8A1F50986A002801D7 /* TemplateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemplateManager.h; sourceTree = SOURCE_ROOT; };
 		88C3CA8B1F50986A002801D7 /* TemplateManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemplateManager.m; sourceTree = SOURCE_ROOT; };
 		88E071991F3221F000C9CB2F /* SDLHapticRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLHapticRect.h; sourceTree = "<group>"; };
@@ -2763,10 +2775,18 @@
 			children = (
 				5D48329F1A92868E00252386 /* ProxyManager.h */,
 				5D4832A01A92868E00252386 /* ProxyManager.m */,
-				88C3CA871F505395002801D7 /* ParseVehicleData.h */,
-				88C3CA881F505395002801D7 /* ParseVehicleData.m */,
 				88C3CA8A1F50986A002801D7 /* TemplateManager.h */,
 				88C3CA8B1F50986A002801D7 /* TemplateManager.m */,
+				884621261F54E1AB00E25F01 /* SoftButtonManager.h */,
+				884621271F54E1AB00E25F01 /* SoftButtonManager.m */,
+				884621291F54E34200E25F01 /* SubscribeButtonManager.h */,
+				8846212A1F54E34200E25F01 /* SubscribeButtonManager.m */,
+				8846212C1F54E4FF00E25F01 /* MediaClockTimerManager.h */,
+				8846212D1F54E4FF00E25F01 /* MediaClockTimerManager.m */,
+				8846212F1F54E5D100E25F01 /* AddCommandManager.h */,
+				884621301F54E5D100E25F01 /* AddCommandManager.m */,
+				884621321F54E68E00E25F01 /* ShowManager.h */,
+				884621331F54E68E00E25F01 /* ShowManager.m */,
 			);
 			name = SDL;
 			sourceTree = "<group>";
@@ -4792,15 +4812,19 @@
 			files = (
 				5D4832A51A94F90D00252386 /* ConnectionTransitionContext.m in Sources */,
 				5D0218FC1A8E7E1700D1BF62 /* ConnectionContainerViewController.m in Sources */,
-				88C3CA891F505395002801D7 /* ParseVehicleData.m in Sources */,
+				8846212E1F54E4FF00E25F01 /* MediaClockTimerManager.m in Sources */,
+				884621341F54E68E00E25F01 /* ShowManager.m in Sources */,
 				5D0218FF1A8E9E0D00D1BF62 /* ConnectionIAPTableViewController.m in Sources */,
 				5D48329D1A8EA33D00252386 /* Preferences.m in Sources */,
 				5D59350F1A855EB300687FB9 /* AppDelegate.m in Sources */,
+				884621311F54E5D100E25F01 /* AddCommandManager.m in Sources */,
 				5D5935121A855EBE00687FB9 /* main.m in Sources */,
 				88C3CA8C1F50986A002801D7 /* TemplateManager.m in Sources */,
 				5D4832A81A95191B00252386 /* ConnectionAnimatedTransition.m in Sources */,
+				884621281F54E1AB00E25F01 /* SoftButtonManager.m in Sources */,
 				5D4832A11A92868E00252386 /* ProxyManager.m in Sources */,
 				5D0218F61A8E79C400D1BF62 /* ConnectionTCPTableViewController.m in Sources */,
+				8846212B1F54E34200E25F01 /* SubscribeButtonManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
