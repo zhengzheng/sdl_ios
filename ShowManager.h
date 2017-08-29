@@ -15,5 +15,6 @@
 
 + (SDLShow *)showCommand_showText:(Boolean)showText showMediaTrack:(Boolean)showMediaTrack showSoftButtons:(Boolean)showSoftButtons showImage:(SDLImage *)showImage withManager:(SDLManager *)manager;
 + (void)showAll_mediaTemplate_withManager:(SDLManager *)manager image:(SDLImage *)image;
++ (void)updateShowAll_mediaTemplate_withManager:(SDLManager *)manager image:(SDLImage *)image;
 
 @end

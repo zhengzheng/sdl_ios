@@ -38,17 +38,29 @@
     return show;
 }
 
-+ (void)showAll_mediaTemplate_withManager:(SDLManager *)manager image:(SDLImage *)image {
++ (void)showAll_mediaTemplate_withManager:(SDLManager *)manager image:(SDLImage *)image withSubscribeButtons:(Boolean)withSubscribeButtons withMediaTimer:(Boolean)withMediaTimer {
     // Text, soft buttons, image
     [self.class sdlex_showMediaWithManager:manager image:image];
 
     // Subscribe buttons
-    for(SDLSubscribeButton *subscribeButton in [SubscribeButtonManager mediaTemplateSubscribeButtonsWithManager:manager]) {
-        [manager sendRequest:subscribeButton];
+    if (withSubscribeButtons) {
+        for(SDLSubscribeButton *subscribeButton in [SubscribeButtonManager mediaTemplateSubscribeButtonsWithManager:manager]) {
+            [manager sendRequest:subscribeButton];
+        }
     }
 
     // Progress bar
-    [manager sendRequest:[MediaClockTimerManager addMediaClockTimerWithManager:manager]];
+    if (withMediaTimer) {
+        [manager sendRequest:[MediaClockTimerManager addMediaClockTimerWithManager:manager]];
+    }
+}
+
++ (void)showAll_mediaTemplate_withManager:(SDLManager *)manager image:(SDLImage *)image {
+    [self.class showAll_mediaTemplate_withManager:manager image:image withSubscribeButtons:YES withMediaTimer:YES];
+}
+
++ (void)updateShowAll_mediaTemplate_withManager:(SDLManager *)manager image:(SDLImage *)image {
+    [self.class showAll_mediaTemplate_withManager:manager image:image withSubscribeButtons:NO withMediaTimer:NO];
 }
 
 + (void)sdlex_showMediaWithManager:(SDLManager *)manager image:(SDLImage *)image {
