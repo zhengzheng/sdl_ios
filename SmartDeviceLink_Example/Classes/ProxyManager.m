@@ -9,6 +9,7 @@
 #import "TemplateManager.h"
 #import "AddCommandManager.h"
 #import "SoftButtonManager.h"
+#import "SDLNames.h"
 
 NSString *const SDLAppName = @"SDL Example App";
 NSString *const SDLAppId = @"9999";
@@ -242,10 +243,122 @@ NS_ASSUME_NONNULL_BEGIN
     [manager sendRequest:alertManeuver withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
         if (![response.resultCode isEqualToEnum:SDLResult.SUCCESS]) {
             SDLAlert* alert = [[SDLAlert alloc] init];
-            alert.alertText1 = @"Alert Maneuvers are only allowed in navigation apps";
+            alert.alertText1 = [NSString stringWithFormat:@"Alert Maneuver RPC sent. Response: %@", response.resultCode];
             [manager sendRequest:alert];
             return;
         }
+    }];
+}
+
++ (void)sdlex_sendAlert:(SDLManager *)manager message:(NSString *)message {
+    SDLAlert* alert = [[SDLAlert alloc] init];
+    alert.alertText1 = message;
+    [manager sendRequest:alert];
+}
+
++ (void)sdlex_unRegisterAppInterface:(SDLManager *)manager {
+    SDLUnregisterAppInterface *unRegisterAppInterface = [[SDLUnregisterAppInterface alloc] init];
+    [manager sendRequest:unRegisterAppInterface withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Unregister App Interface RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_unsubscribeVehicleData:(SDLManager *)manager {
+    SDLUnsubscribeVehicleData *unsubscribeVehicleData = [[SDLUnsubscribeVehicleData alloc] init];
+
+    [manager sendRequest:unsubscribeVehicleData withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Unsubscribe Vehicle Data RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_updateTurnList:(SDLManager *)manager {
+    SDLUpdateTurnList *turnList = [[SDLUpdateTurnList alloc] init];
+    SDLTurn *turn = [[SDLTurn alloc] init];
+    SDLSoftButton *button = [[SDLSoftButton alloc] init];
+    turnList.turnList = [@[turn] mutableCopy];
+    turnList.softButtons = [@[button] mutableCopy];
+
+    [manager sendRequest:turnList withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Update turn list RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_getWaypoints:(SDLManager *)manager {
+    SDLGetWayPoints *wayPoints = [[SDLGetWayPoints alloc] initWithType:SDLWaypointType.ALL];
+    [manager sendRequest:wayPoints withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Waypoints RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_unsubscribeWaypoints:(SDLManager *)manager {
+    SDLUnsubscribeWayPoints *unsubscribeWayPoints = [[SDLUnsubscribeWayPoints alloc] init];
+    [manager sendRequest:unsubscribeWayPoints withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Unsubscribe Waypoints RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_getSystemCapability:(SDLManager *)manager {
+    SDLGetSystemCapability *capability = [[SDLGetSystemCapability alloc] initWithType:SDLSystemCapabilityType.VIDEO_STREAMING];
+    [manager sendRequest:capability withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Get System Capability RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_getDTCs:(SDLManager *)manager {
+    SDLGetDTCs *dtcs = [[SDLGetDTCs alloc] init];
+    dtcs.ecuName = @4321;
+    dtcs.dtcMask = @22;
+
+    [manager sendRequest:dtcs withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Get DTCs RPC sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_encodedSyncPData:(SDLManager *)manager {
+    SDLEncodedSyncPData *data = [[SDLEncodedSyncPData alloc] init];
+    data.data = [@[@2, @2, @2] mutableCopy];
+    [manager sendRequest:data withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Dial Number RPC Sent. Response: %@", response.resultCode]];
+    }];
+}
+
++ (void)sdlex_dialNumber:(SDLManager *)manager {
+    SDLDialNumber *dialNumber = [[SDLDialNumber alloc] initWithNumber:@"1234567890"];
+    [manager sendRequest:dialNumber withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLAlert* alert = [[SDLAlert alloc] init];
+        alert.alertText1 = [NSString stringWithFormat:@"Dial Number RPC Sent. Response: %@", response.resultCode];
+        [manager sendRequest:alert];
+    }];
+}
+
++ (void)sdlex_diagnosticMessage:(SDLManager *)manager {
+    SDLDiagnosticMessage *diagnosticMessage = [[SDLDiagnosticMessage alloc] init];
+    diagnosticMessage.targetID = @3562;
+    diagnosticMessage.messageLength = @55555;
+    diagnosticMessage.messageData = [@[@1, @4, @16, @64] mutableCopy];
+
+    [manager sendRequest:diagnosticMessage withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLAlert* alert = [[SDLAlert alloc] init];
+        alert.alertText1 = [NSString stringWithFormat:@"Diagnostic Message RPC Sent. Response: %@", response.resultCode];
+        [manager sendRequest:alert];
+    }];
+}
+
++ (void)sdlex_deleteFileWithManager:(SDLManager *)manager {
+    SDLDeleteFile *deleteFile = [[SDLDeleteFile alloc] initWithFileName:@"Test file"];
+    [manager sendRequest:deleteFile withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLAlert* alert = [[SDLAlert alloc] init];
+        alert.alertText1 = [NSString stringWithFormat:@"Delete File RPC sent. Response: %@", response.resultCode];
+        [manager sendRequest:alert];
+    }];
+}
+
++ (void)sdlex_changeRegistrationWithManager:(SDLManager *)manager {
+    SDLChangeRegistration *changeRegistration = [[SDLChangeRegistration alloc] initWithLanguage:SDLLanguage.EN_SA hmiDisplayLanguage:SDLLanguage.EN_SA appName:@"New App Name" ttsName:[SDLTTSChunk textChunksFromString:@"New App Name"] ngnMediaScreenAppName:@"New App" vrSynonyms:[@[@"New App"] mutableCopy]];
+    [manager sendRequest:changeRegistration withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLAlert* alert = [[SDLAlert alloc] init];
+        alert.alertText1 = [NSString stringWithFormat:@"Change registration RPC sent. Response: %@", response.resultCode];
+        [manager sendRequest:alert];
     }];
 }
 
@@ -345,6 +458,7 @@ NS_ASSUME_NONNULL_BEGIN
     performOnlyChoiceInteraction.timeoutPrompt = [SDLTTSChunk textChunksFromString:@"Too late"];
     performOnlyChoiceInteraction.timeout = @5000;
     performOnlyChoiceInteraction.interactionLayout = [SDLLayoutMode LIST_ONLY];
+    performOnlyChoiceInteraction.vrHelp = [@[[[SDLVRHelpItem alloc] initWithText:@"Test" image:nil]] mutableCopy];
 
     [manager sendRequest:performOnlyChoiceInteraction withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLPerformInteractionResponse * _Nullable response, NSError * _Nullable error) {
         if ((response == nil) || (error != nil)) {
@@ -363,7 +477,68 @@ NS_ASSUME_NONNULL_BEGIN
     SDLGetVehicleData *getVehicleData = [[SDLGetVehicleData alloc] initWithAccelerationPedalPosition:YES airbagStatus:YES beltStatus:YES bodyInformation:YES clusterModeStatus:YES deviceStatus:YES driverBraking:YES eCallInfo:YES emergencyEvent:YES engineTorque:YES externalTemperature:YES fuelLevel:YES fuelLevelState:YES gps:YES headLampStatus:YES instantFuelConsumption:YES myKey:YES odometer:YES prndl:YES rpm:YES speed:YES steeringWheelAngle:YES tirePressure:YES vin:YES wiperStatus:YES];
 
     [manager sendRequest:getVehicleData withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-        NSLog(@"vehicle data response: %@", response);
+        SDLAlert* alert = [[SDLAlert alloc] init];
+        alert.alertText1 = [NSString stringWithFormat:@"Get vehicle data RPC sent. Response: %@", response.resultCode];
+        [manager sendRequest:alert];
+
+        if ([response.resultCode isEqualToEnum:SDLResult.SUCCESS]) {
+            // Parse the data
+            NSNumber *pedalPosition = [response valueForKey:NAMES_accPedalPosition];
+            NSLog(@"Acceleration Pedal position: %@", pedalPosition);
+            SDLAirbagStatus *airbagStatus = [response valueForKey:NAMES_airbagStatus];
+            NSLog(@"Airbag Status, %@", airbagStatus);
+            SDLBeltStatus *beltStatus = [response valueForKey:NAMES_beltStatus];
+            NSLog(@"Belt Status, %@", beltStatus);
+            SDLBodyInformation *bodyInformation = [response valueForKey:NAMES_bodyInformation];
+            NSLog(@"Body Information, %@", bodyInformation);
+            SDLClusterModeStatus *clusterModeStatus = [response valueForKey:NAMES_clusterModeStatus];
+            NSLog(@"Cluster Mode Status: %@", clusterModeStatus);
+            SDLDeviceStatus *deviceStatus = [response valueForKey:NAMES_deviceStatus];
+            NSLog(@"Device Status: %@", deviceStatus);
+            NSNumber *driverBraking = [response valueForKey:NAMES_driverBraking];
+            NSLog(@"Driver Braking: %@", driverBraking);
+            SDLECallInfo *eCallInfo = [response valueForKey:NAMES_eCallInfo];
+            NSLog(@"Emergency Call Info: %@", eCallInfo);
+            SDLEmergencyEvent *emergencyEvent = [response valueForKey:NAMES_emergencyEvent];
+            NSLog(@"Emergency Event: %@", emergencyEvent);
+            NSNumber *engineTorque = [response valueForKey:NAMES_engineTorque];
+            NSLog(@"Engine Torque: %@", engineTorque);
+            NSNumber *externalTemperature = [response valueForKey:NAMES_externalTemperature];
+            NSLog(@"External Temperature %@", externalTemperature);
+            NSNumber *fuelLevel = [response valueForKey:NAMES_fuelLevel];
+            NSLog(@"Fuel Level: %@", fuelLevel);
+            NSNumber *fuelLevelState = [response valueForKey:NAMES_fuelLevel_State];
+            NSLog(@"Fuel Level State: %@", fuelLevelState);
+            SDLGPSData *gpsData = [response valueForKey:NAMES_gps];
+            NSLog(@"GPS Data: %@", gpsData);
+            SDLHeadLampStatus *headLampStatus = [response valueForKey:NAMES_headLampStatus];
+            NSLog(@"Headlamp status: %@", headLampStatus);
+            NSNumber *instantFuelConsumption = [response valueForKey:NAMES_instantFuelConsumption];
+            NSLog(@"Instant fuel consumption: %@", instantFuelConsumption);
+            SDLMyKey *myKey = [response valueForKey:NAMES_myKey];
+            NSLog(@"My Key: %@", myKey);
+            NSNumber *odometer = [response valueForKey:NAMES_odometer];
+            NSLog(@"Odometer: %@", odometer);
+            SDLPRNDL *prndl = [response valueForKey:NAMES_prndl];
+            NSLog(@"Park Reverse Neutral Drive: %@", prndl);
+            NSNumber *rpm = [response valueForKey:NAMES_rpm];
+            NSLog(@"RPM: %@", rpm);
+            NSNumber *speed = [response valueForKey:NAMES_speed];
+            NSLog(@"Speed: %@", speed);
+            NSNumber *steeringWheelAngle = [response valueForKey:NAMES_steeringWheelAngle];
+            NSLog(@"Steering Wheel Angle: %@", steeringWheelAngle);
+            SDLTireStatus *tireStatus = [response valueForKey:NAMES_tirePressure];
+            NSLog(@"Tire Pressure: %@", tireStatus);
+            SDLSingleTireStatus *singleTireStatus = tireStatus.leftRear;
+            NSLog(@"Left Rear: %@", singleTireStatus.status);
+            NSNumber *vin = [response valueForKey:NAMES_vin];
+            NSLog(@"VIN: %@", vin);
+            SDLWiperStatus *wiperStatus = [response valueForKey:NAMES_wiperStatus];
+            NSLog(@"Wiper Status: %@", wiperStatus);
+        }
+
+        NSLog(@"vehicle data: %@", response);
+        return;
     }];
 }
 
@@ -419,6 +594,52 @@ NS_ASSUME_NONNULL_BEGIN
     [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Scrollable Message" handler:^{
         [self.class sdlex_createScrollableMessageWithManager:self.sdlManager];
     }] withResponseHandler:nil];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Change Registration" handler:^{
+        [self.class sdlex_changeRegistrationWithManager:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Delete File" handler:^{
+        [self.class sdlex_deleteFileWithManager:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Diagnostic Message" handler:^{
+        [self.class sdlex_diagnosticMessage:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Dial Number" handler:^{
+        [self.class sdlex_dialNumber:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Encoded Sync P Data" handler:^{
+        [self.class sdlex_encodedSyncPData:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Get DTCs" handler:^{
+        [self.class sdlex_getDTCs:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Get System Capability" handler:^{
+        [self.class sdlex_getSystemCapability:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Get Waypoints" handler:^{
+        [self.class sdlex_getWaypoints:self.sdlManager];
+    }]];
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Unregister App Interface" handler:^{
+        [self.class sdlex_unRegisterAppInterface:self.sdlManager];
+    }]];
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Unsubscribe Vehicle Data" handler:^{
+        [self.class sdlex_unsubscribeVehicleData:self.sdlManager];
+    }]];
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Unsubscribe Waypoints" handler:^{
+        [self.class sdlex_unsubscribeWaypoints:self.sdlManager];
+    }]];
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Update Turn List" handler:^{
+        [self.class sdlex_updateTurnList:self.sdlManager];
+    }]];
+
 
     int parentMenuId = (commandId++);
     [self.sdlManager sendRequest:[self.class sdlex_changeTemplateAddSubmenuWithManager:self.sdlManager commandId:parentMenuId] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
