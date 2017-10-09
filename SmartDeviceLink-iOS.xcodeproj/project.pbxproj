@@ -1011,6 +1011,13 @@
 		5DE5ABB71B0E38C90067BB02 /* SDLSystemRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D61FBD21A84238B00846EE7 /* SDLSystemRequest.h */; };
 		5DE5ABB81B0E38C90067BB02 /* SDLSystemRequestResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D61FBD41A84238B00846EE7 /* SDLSystemRequestResponse.h */; };
 		5DFFB9151BD7C89700DB3F04 /* SDLConnectionManagerType.h in Headers */ = {isa = PBXBuildFile; fileRef = 5DFFB9141BD7C89700DB3F04 /* SDLConnectionManagerType.h */; };
+		882255811F8BAB0F00C13EED /* TemplateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 882255801F8BAB0F00C13EED /* TemplateManager.m */; };
+		882255841F8BABE700C13EED /* SoftButtonManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 882255831F8BABE700C13EED /* SoftButtonManager.m */; };
+		882255871F8BACCC00C13EED /* SubscribeButtonManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 882255861F8BACCC00C13EED /* SubscribeButtonManager.m */; };
+		8822558A1F8BADDC00C13EED /* MediaClockTimerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 882255891F8BADDC00C13EED /* MediaClockTimerManager.m */; };
+		8822558D1F8BAE4600C13EED /* AddCommandManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8822558C1F8BAE4600C13EED /* AddCommandManager.m */; };
+		882255911F8BB0A600C13EED /* ShowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 882255901F8BB0A600C13EED /* ShowManager.m */; };
+		8850CC351F8BBAAC0098615C /* AlertManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8850CC341F8BBAAC0098615C /* AlertManager.m */; };
 		8850DB601F4475D30053A48D /* TestMultipleFilesConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8850DB5F1F4475D30053A48D /* TestMultipleFilesConnectionManager.m */; };
 		8877F5EB1F34A3BE00DC128A /* SDLSendHapticDataSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8877F5EA1F34A3BE00DC128A /* SDLSendHapticDataSpec.m */; };
 		8877F5EE1F34A72200DC128A /* SDLSendHapticDataResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 8877F5EC1F34A72200DC128A /* SDLSendHapticDataResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2226,6 +2233,20 @@
 		5DEE55BF1B8509CB004F0D0F /* SDLURLRequestTaskSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLURLRequestTaskSpec.m; path = "UtilitiesSpecs/HTTP Connection/SDLURLRequestTaskSpec.m"; sourceTree = "<group>"; };
 		5DF2BB9C1B94E38A00CE5994 /* SDLURLSessionSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLURLSessionSpec.m; path = "UtilitiesSpecs/HTTP Connection/SDLURLSessionSpec.m"; sourceTree = "<group>"; };
 		5DFFB9141BD7C89700DB3F04 /* SDLConnectionManagerType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLConnectionManagerType.h; sourceTree = "<group>"; };
+		8822557F1F8BAB0F00C13EED /* TemplateManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TemplateManager.h; sourceTree = "<group>"; };
+		882255801F8BAB0F00C13EED /* TemplateManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TemplateManager.m; sourceTree = "<group>"; };
+		882255821F8BABE700C13EED /* SoftButtonManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SoftButtonManager.h; sourceTree = "<group>"; };
+		882255831F8BABE700C13EED /* SoftButtonManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SoftButtonManager.m; sourceTree = "<group>"; };
+		882255851F8BACCC00C13EED /* SubscribeButtonManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SubscribeButtonManager.h; sourceTree = "<group>"; };
+		882255861F8BACCC00C13EED /* SubscribeButtonManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SubscribeButtonManager.m; sourceTree = "<group>"; };
+		882255881F8BADDC00C13EED /* MediaClockTimerManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaClockTimerManager.h; sourceTree = "<group>"; };
+		882255891F8BADDC00C13EED /* MediaClockTimerManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaClockTimerManager.m; sourceTree = "<group>"; };
+		8822558B1F8BAE4600C13EED /* AddCommandManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddCommandManager.h; sourceTree = "<group>"; };
+		8822558C1F8BAE4600C13EED /* AddCommandManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddCommandManager.m; sourceTree = "<group>"; };
+		8822558F1F8BB0A600C13EED /* ShowManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShowManager.h; sourceTree = "<group>"; };
+		882255901F8BB0A600C13EED /* ShowManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShowManager.m; sourceTree = "<group>"; };
+		8850CC331F8BBAAC0098615C /* AlertManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AlertManager.h; sourceTree = "<group>"; };
+		8850CC341F8BBAAC0098615C /* AlertManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AlertManager.m; sourceTree = "<group>"; };
 		8850DB5E1F4475D30053A48D /* TestMultipleFilesConnectionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestMultipleFilesConnectionManager.h; sourceTree = "<group>"; };
 		8850DB5F1F4475D30053A48D /* TestMultipleFilesConnectionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestMultipleFilesConnectionManager.m; sourceTree = "<group>"; };
 		8877F5EA1F34A3BE00DC128A /* SDLSendHapticDataSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLSendHapticDataSpec.m; sourceTree = "<group>"; };
@@ -2770,13 +2791,6 @@
 			path = MessageSpecs;
 			sourceTree = "<group>";
 		};
-		5D0218E71A8D611600D1BF62 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		5D0218EB1A8E795700D1BF62 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -2884,13 +2898,12 @@
 				5D4019B21A76EC350006B0C2 /* Supporting Files */,
 			);
 			name = Example;
-			path = "SmartDeviceLink-iOS";
+			path = SmartDeviceLink_Example;
 			sourceTree = "<group>";
 		};
 		5D4019B21A76EC350006B0C2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				5D0218E71A8D611600D1BF62 /* Frameworks */,
 				5D5935111A855EBE00687FB9 /* main.m */,
 				5D4029D51A76F0410006B0C2 /* Info.plist */,
 			);
@@ -2983,6 +2996,7 @@
 			children = (
 				5D48329F1A92868E00252386 /* ProxyManager.h */,
 				5D4832A01A92868E00252386 /* ProxyManager.m */,
+				8822558E1F8BB09500C13EED /* Managers */,
 			);
 			name = SDL;
 			sourceTree = "<group>";
@@ -4381,6 +4395,27 @@
 			name = "HTTP Connection";
 			sourceTree = "<group>";
 		};
+		8822558E1F8BB09500C13EED /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				8822558B1F8BAE4600C13EED /* AddCommandManager.h */,
+				8822558C1F8BAE4600C13EED /* AddCommandManager.m */,
+				8850CC331F8BBAAC0098615C /* AlertManager.h */,
+				8850CC341F8BBAAC0098615C /* AlertManager.m */,
+				882255881F8BADDC00C13EED /* MediaClockTimerManager.h */,
+				882255891F8BADDC00C13EED /* MediaClockTimerManager.m */,
+				8822558F1F8BB0A600C13EED /* ShowManager.h */,
+				882255901F8BB0A600C13EED /* ShowManager.m */,
+				882255821F8BABE700C13EED /* SoftButtonManager.h */,
+				882255831F8BABE700C13EED /* SoftButtonManager.m */,
+				882255851F8BACCC00C13EED /* SubscribeButtonManager.h */,
+				882255861F8BACCC00C13EED /* SubscribeButtonManager.m */,
+				8822557F1F8BAB0F00C13EED /* TemplateManager.h */,
+				882255801F8BAB0F00C13EED /* TemplateManager.m */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		88B848C41F45E20900DED768 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -5092,12 +5127,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				882255871F8BACCC00C13EED /* SubscribeButtonManager.m in Sources */,
 				5D4832A51A94F90D00252386 /* ConnectionTransitionContext.m in Sources */,
+				882255911F8BB0A600C13EED /* ShowManager.m in Sources */,
 				5D0218FC1A8E7E1700D1BF62 /* ConnectionContainerViewController.m in Sources */,
+				882255841F8BABE700C13EED /* SoftButtonManager.m in Sources */,
 				5D0218FF1A8E9E0D00D1BF62 /* ConnectionIAPTableViewController.m in Sources */,
+				882255811F8BAB0F00C13EED /* TemplateManager.m in Sources */,
 				5D48329D1A8EA33D00252386 /* Preferences.m in Sources */,
+				8822558A1F8BADDC00C13EED /* MediaClockTimerManager.m in Sources */,
 				5D59350F1A855EB300687FB9 /* AppDelegate.m in Sources */,
+				8822558D1F8BAE4600C13EED /* AddCommandManager.m in Sources */,
 				5D5935121A855EBE00687FB9 /* main.m in Sources */,
+				8850CC351F8BBAAC0098615C /* AlertManager.m in Sources */,
 				5D4832A81A95191B00252386 /* ConnectionAnimatedTransition.m in Sources */,
 				5D4832A11A92868E00252386 /* ProxyManager.m in Sources */,
 				5D0218F61A8E79C400D1BF62 /* ConnectionTCPTableViewController.m in Sources */,
