@@ -8,6 +8,7 @@
 
 #import "TemplateManager.h"
 #import "AddCommandManager.h"
+#import "AlertManager.h"
 #import "MediaClockTimerManager.h"
 #import "ShowManager.h"
 #import "SoftButtonManager.h"
@@ -66,6 +67,22 @@ NS_ASSUME_NONNULL_BEGIN
         templateChangedHandler = ^{
             [manager sendRequest:[ShowManager showCommand_showText:NO showMediaTrack:NO showSoftButtons:NO showImage:image withManager:manager]];
         };
+    } else if ([template isEqualToEnum:SDLPredefinedLayoutDefault]) {
+        templateChangedHandler = ^{
+            // TODO: not sure what default does...
+        };
+    } else if ([template isEqualToEnum:SDLPredefinedLayoutNavigationList] ||
+               [template isEqualToEnum:SDLPredefinedLayoutNavigationKeyboard] ||
+               [template isEqualToEnum:SDLPredefinedLayoutNavigationFullscreenMap]) {
+        if (![manager.configuration.lifecycleConfig.appType isEqualToEnum:SDLAppHMITypeNavigation]) {
+            // Navigation templates can only be used when the appType has been set to NAVIGATION
+            [AlertManager alertCommand_showText:[NSString stringWithFormat:@"Navigation templates can only be used when the appType has been set to NAVIGATION. The appType has been set to %@ for this app", manager.configuration.lifecycleConfig.appType] softButtons:[SoftButtonManager alertButtonsWithManager:manager] duration:5 withManager:manager];
+            return;
+        } else {
+            templateChangedHandler = ^{
+                // TODO: show buttons/etc for navigation
+            };
+        }
     } else {
         SDLAlert* alert = [[SDLAlert alloc] init];
         alert.alertText1 = [NSString stringWithFormat:@"No template for: %@", template];

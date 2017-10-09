@@ -2,12 +2,12 @@
 //  ProxyManager.m
 //  SmartDeviceLink-iOS
 
-#import "SmartDeviceLink.h"
-
 #import "ProxyManager.h"
-
+#import "AddCommandManager.h"
 #import "Preferences.h"
-
+#import "SoftButtonManager.h"
+#import "SmartDeviceLink.h"
+#import "TemplateManager.h"
 
 NSString *const SDLAppName = @"SDL Example App";
 NSString *const SDLAppId = @"9999";
@@ -77,7 +77,7 @@ NS_ASSUME_NONNULL_BEGIN
     if (self.sdlManager) { return; }
     SDLLifecycleConfiguration *lifecycleConfig = [self.class sdlex_setLifecycleConfigurationPropertiesOnConfiguration:[SDLLifecycleConfiguration defaultConfigurationWithAppName:SDLAppName appId:SDLAppId]];
     
-    SDLConfiguration *config = [SDLConfiguration configurationWithLifecycle:lifecycleConfig lockScreen:[SDLLockScreenConfiguration enabledConfiguration] logging:[SDLLogConfiguration debugConfiguration]];
+    SDLConfiguration *config = [SDLConfiguration configurationWithLifecycle:lifecycleConfig lockScreen:[SDLLockScreenConfiguration enabledConfiguration] logging:[self.class sdlex_logConfiguration]];
     self.sdlManager = [[SDLManager alloc] initWithConfiguration:config delegate:self];
 
     [self startManager];
@@ -88,7 +88,7 @@ NS_ASSUME_NONNULL_BEGIN
     // Check for previous instance of sdlManager
     if (self.sdlManager) { return; }
     SDLLifecycleConfiguration *lifecycleConfig = [self.class sdlex_setLifecycleConfigurationPropertiesOnConfiguration:[SDLLifecycleConfiguration debugConfigurationWithAppName:SDLAppName appId:SDLAppId ipAddress:[Preferences sharedPreferences].ipAddress port:[Preferences sharedPreferences].port]];
-    SDLConfiguration *config = [SDLConfiguration configurationWithLifecycle:lifecycleConfig lockScreen:[SDLLockScreenConfiguration enabledConfiguration] logging:[SDLLogConfiguration debugConfiguration]];
+    SDLConfiguration *config = [SDLConfiguration configurationWithLifecycle:lifecycleConfig lockScreen:[SDLLockScreenConfiguration enabledConfiguration] logging:[self.class sdlex_logConfiguration]];
     self.sdlManager = [[SDLManager alloc] initWithConfiguration:config delegate:self];
 
     [self startManager];
@@ -198,7 +198,8 @@ NS_ASSUME_NONNULL_BEGIN
     SDLLogFileModule *sdlExampleModule = [SDLLogFileModule moduleWithName:@"SDL Example" files:[NSSet setWithArray:@[@"ProxyManager"]]];
     logConfig.modules = [logConfig.modules setByAddingObject:sdlExampleModule];
     logConfig.targets = [logConfig.targets setByAddingObject:[SDLLogTargetFile logger]];
-//    logConfig.filters = [logConfig.filters setByAddingObject:[SDLLogFilter filterByAllowingModules:[NSSet setWithObject:@"Transport"]]];
+    // logConfig.filters = [logConfig.filters setByAddingObject:[SDLLogFilter filterByAllowingModules:[NSSet setWithObject:@"Transport"]]];
+    logConfig.globalLogLevel = SDLLogLevelVerbose;
 
     return logConfig;
 }
@@ -212,6 +213,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 #pragma mark - RPC builders
+
++ (SDLAddSubMenu *)sdlex_changeTemplateAddSubmenuWithManager:(SDLManager *)manager commandId:(int)commandId {
+    return [[SDLAddSubMenu alloc] initWithId:commandId menuName:@"Change the Template"];
+}
 
 + (SDLAddCommand *)sdlex_speakNameCommandWithManager:(SDLManager *)manager {
     NSString *commandName = @"Speak App Name";
@@ -445,6 +450,51 @@ static Boolean areImagesVisible = true;
     return image;
 }
 
++ (NSArray<SDLAddCommand *> *)sdlex_templateNamesAddCommand_WithManager:(SDLManager *)manager parentCommandId:(int)parentCommandId startingCommandId:(int)startingCommandId {
+    int commandId = startingCommandId;
+    NSMutableArray<SDLAddCommand *> *templatesAddCommands = [NSMutableArray array];
+    for (SDLPredefinedLayout template in [self.class sdlex_predefinedLayouts]) {
+        SDLMenuParams *commandMenuParams = [[SDLMenuParams alloc] init];
+        commandMenuParams.menuName = [NSString stringWithFormat:@"%@", template];
+        commandMenuParams.parentID = @(parentCommandId);
+
+        SDLAddCommand *changeTemplateCommand = [[SDLAddCommand alloc] init];
+        changeTemplateCommand.vrCommands = [NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%@", template]];
+        changeTemplateCommand.menuParams = commandMenuParams;
+        changeTemplateCommand.cmdID = @(commandId++);
+
+        changeTemplateCommand.handler = ^(__kindof SDLRPCNotification * _Nonnull notification) {
+            [TemplateManager changeTemplateWithManager:manager toTemplate:template image:[self.class sdlex_mainGraphicImage]];
+        };
+
+        [templatesAddCommands addObject:changeTemplateCommand];
+    }
+    return templatesAddCommands;
+}
+
++ (NSArray<SDLPredefinedLayout> *)sdlex_predefinedLayouts {
+    return @[SDLPredefinedLayoutDefault,
+             SDLPredefinedLayoutMedia,
+             SDLPredefinedLayoutNonMedia,
+             SDLPredefinedLayoutOnscreenPresets,
+             SDLPredefinedLayoutNavigationFullscreenMap,
+             SDLPredefinedLayoutNavigationList,
+             SDLPredefinedLayoutNavigationKeyboard,
+             SDLPredefinedLayoutGraphicWithText,
+             SDLPredefinedLayoutTextWithGraphic,
+             SDLPredefinedLayoutTilesOnly,
+             SDLPredefinedLayoutTextButtonsOnly,
+             SDLPredefinedLayoutGraphicWithTiles,
+             SDLPredefinedLayoutTilesWithGraphic,
+             SDLPredefinedLayoutGraphicWithTextAndSoftButtons,
+             SDLPredefinedLayoutTextAndSoftButtonsWithGraphic,
+             SDLPredefinedLayoutGraphicWithTextButtons,
+             SDLPredefinedLayoutTextButtonsWithGraphic,
+             SDLPredefinedLayoutLargeGraphicWithSoftButtons,
+             SDLPredefinedLayoutDoubleGraphicWithSoftButtons,
+             SDLPredefinedLayoutLargeGraphicOnly];
+}
+
 + (void)sdlex_sendGetVehicleDataWithManager:(SDLManager *)manager {
     SDLGetVehicleData *getVehicleData = [[SDLGetVehicleData alloc] initWithAccelerationPedalPosition:YES airbagStatus:YES beltStatus:YES bodyInformation:YES clusterModeStatus:YES deviceStatus:YES driverBraking:YES eCallInfo:YES emergencyEvent:YES engineTorque:YES externalTemperature:YES fuelLevel:YES fuelLevelState:YES gps:YES headLampStatus:YES instantFuelConsumption:YES myKey:YES odometer:YES prndl:YES rpm:YES speed:YES steeringWheelAngle:YES tirePressure:YES vin:YES wiperStatus:YES];
 
@@ -557,26 +607,151 @@ static Boolean areImagesVisible = true;
 }
 
 - (void)sdlex_prepareRemoteSystem {
-    [self.sdlManager sendRequest:[self.class sdlex_speakNameCommandWithManager:self.sdlManager]];
-    [self.sdlManager sendRequest:[self.class sdlex_interactionSetCommandWithManager:self.sdlManager]];
-    [self.sdlManager sendRequest:[self.class sdlex_vehicleDataCommandWithManager:self.sdlManager]];
-    
-    dispatch_group_t dataDispatchGroup = dispatch_group_create();
-    dispatch_group_enter(dataDispatchGroup);
-    
-    dispatch_group_enter(dataDispatchGroup);
-    [self sdlex_uploadFiles:[self.class sdlex_allArtAndBlankPlaceholderArt] completionHandler:^(BOOL success) {
-        dispatch_group_leave(dataDispatchGroup);
-        if (!success) { return; }
-    }];
+    int commandId = 600;
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Perform Interaction" handler:^{
+    //        // NOTE: You may want to preload your interaction sets, because they can take a while for the remote system to process. We're going to ignore our own advice here.
+    //        [self.class sdlex_sendPerformOnlyChoiceInteractionWithManager:self.sdlManager];
+    //    }] withResponseHandler:nil];
 
-    dispatch_group_enter(dataDispatchGroup);
-    [self.sdlManager sendRequest:[self.class sdlex_createOnlyChoiceInteractionSet] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-        // Interaction choice set ready
-        dispatch_group_leave(dataDispatchGroup);
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Show Slider" handler:^{
+    //        [self.class sdlex_createSliderWithManager:self.sdlManager];
+    //    }] withResponseHandler:nil];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Alert Maneuver" handler:^{
+    //        [self.class sdlex_createAlertManeuverWithManager:self.sdlManager];
+    //    }] withResponseHandler:nil];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Alert" handler:^{
+    //        [self.class sdlex_createAlertWithManager:self.sdlManager];
+    //    }] withResponseHandler:nil];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Scrollable Message" handler:^{
+    //        [self.class sdlex_createScrollableMessageWithManager:self.sdlManager];
+    //    }] withResponseHandler:nil];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Change Registration" handler:^{
+    //        [self.class sdlex_changeRegistrationWithManager:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Delete File" handler:^{
+    //        [self.class sdlex_deleteFileWithManager:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Diagnostic Message" handler:^{
+    //        [self.class sdlex_diagnosticMessage:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Dial Number" handler:^{
+    //        [self.class sdlex_dialNumber:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Get DTCs" handler:^{
+    //        [self.class sdlex_getDTCs:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Get System Capability" handler:^{
+    //        [self.class sdlex_getSystemCapability:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Get Waypoints" handler:^{
+    //        [self.class sdlex_getWaypoints:self.sdlManager];
+    //    }]];
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Subscribe Waypoints" handler:^{
+    //        [self.class sdlex_subscribeWaypoints:self.sdlManager];
+    //    }]];
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Unsubscribe Waypoints" handler:^{
+    //        [self.class sdlex_unsubscribeWaypoints:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Unregister App Interface" handler:^{
+    //        [self.class sdlex_unRegisterAppInterface:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Update Turn List" handler:^{
+    //        [self.class sdlex_updateTurnList:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Sync P Data" handler:^{
+    //        [self.class sdlex_syncPData:self.sdlManager];
+    //    }]];
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Encoded Sync P Data" handler:^{
+    //        [self.class sdlex_encodedSyncPData:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"End Audio Pass Thru" handler:^{
+    //        [self.class sdlex_endAudioPassThru:self.sdlManager];
+    //    }]];
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Send Location" handler:^{
+    //        [self.class sdlex_sendLocation:self.sdlManager];
+    //    }]];
+
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Get Vehicle Data" handler:^{
+    //        [self.class sdlex_sendGetVehicleDataWithManager:self.sdlManager];
+    //    }] withResponseHandler:nil];
+
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Subscribe Vehicle Data" handler:^{
+    //        [self.class sdlex_subscribeVehicleData:self.sdlManager];
+    //    }]];
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Unsubscribe Vehicle Data" handler:^{
+    //        [self.class sdlex_unsubscribeVehicleData:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Show Constant TBT" handler:^{
+    //        [self.class sdlex_showConstantTBT:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Reset Global Properties" handler:^{
+    //        [self.class sdlex_resetGlobalProperties:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Show Read DID" handler:^{
+    //        [self.class sdlex_showReadDID:self.sdlManager];
+    //    }]];
+    //
+    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Set Global Properties" handler:^{
+    //        [self.class sdlex_setGlobalProperties:self.sdlManager];
+    //    }]];
+
+    int parentMenuId = (commandId++);
+    [self.sdlManager sendRequest:[self.class sdlex_changeTemplateAddSubmenuWithManager:self.sdlManager commandId:parentMenuId] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        if([[response resultCode] isEqualToEnum:SDLResultSuccess]) {
+            for (SDLAddCommand *addCommand in [self.class sdlex_templateNamesAddCommand_WithManager:self.sdlManager parentCommandId:parentMenuId startingCommandId:(parentMenuId + 1)]) {
+                [self.sdlManager sendRequest:addCommand];
+            }
+        } else {
+            SDLLogE(@"The template submenu was not created successfully");
+        }
+
     }];
-    
-    dispatch_group_leave(dataDispatchGroup);
+    commandId += [self.class sdlex_predefinedLayouts].count;
+
+    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Speak App Name" handler:^{
+        [self.sdlManager sendRequest:[self.class sdlex_appNameSpeak]];
+    }] withResponseHandler:nil];
+
+
+    dispatch_group_t dataDispatchGroup = dispatch_group_create();
+//    dispatch_group_enter(dataDispatchGroup);
+
+
+    //    dispatch_group_enter(dataDispatchGroup);
+    //    [self.sdlManager.fileManager uploadFile:[self.class sdlex_pointingSoftButtonArtwork] completionHandler:^(BOOL success, NSUInteger bytesAvailable, NSError * _Nullable error) {
+    //        dispatch_group_leave(dataDispatchGroup);
+    //
+    //        if (success == NO) {
+    //            NSLog(@"Something went wrong, image could not upload: %@", error);
+    //            return;
+    //        }
+    //    }];
+
+    //    dispatch_group_enter(dataDispatchGroup);
+    //    [self.sdlManager sendRequest:[self.class sdlex_createOnlyChoiceInteractionSet] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+    //        // Interaction choice set ready
+    //        dispatch_group_leave(dataDispatchGroup);
+    //    }];
+
+//    dispatch_group_leave(dataDispatchGroup);
     dispatch_group_notify(dataDispatchGroup, dispatch_get_main_queue(), ^{
         self.initialShowState = SDLHMIInitialShowStateDataAvailable;
         [self sdlex_showInitialData];
