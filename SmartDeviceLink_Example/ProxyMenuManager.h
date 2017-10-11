@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ProxyMenuManager : NSObject
 
 + (void)sendMenuItemsWithManager:(SDLManager *)manager;
++ (void)sendChoiceSetWithManager:(SDLManager *)manager;
 
 @end
 

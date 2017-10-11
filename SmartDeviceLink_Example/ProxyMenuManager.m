@@ -234,6 +234,19 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 #pragma mark - Perform Interaction Choice Sets
+static const int choiceSetId = 10000;
+static const int choiceId = 10005;
+
++ (void)sendChoiceSetWithManager:(SDLManager *)manager {
+    [manager sendRequest:[self.class sdlex_createChoiceInteractionSetWithChoiceSetId:@(choiceSetId) choiceId:@(choiceId)] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        if (error == nil && response != nil) {
+            SDLLogD(@"choice set sent successfully");
+        } else {
+            SDLLogE(@"error creating choice set (%@)", error);
+        }
+    }];
+}
+
 + (SDLCreateInteractionChoiceSet *)sdlex_createChoiceInteractionSetWithChoiceSetId:(NSNumber *)choiceSetId choiceId:(NSNumber *)choiceId {
     SDLCreateInteractionChoiceSet *createInteractionSet = [[SDLCreateInteractionChoiceSet alloc] init];
     createInteractionSet.interactionChoiceSetID = choiceSetId;
@@ -242,8 +255,8 @@ NS_ASSUME_NONNULL_BEGIN
     SDLChoice *theOnlyChoice = [[SDLChoice alloc] init];
     theOnlyChoice.choiceID = choiceId;
     theOnlyChoice.menuName = theOnlyChoiceName;
-    theOnlyChoice.vrCommands = [NSMutableArray arrayWithObject:theOnlyChoiceName];
-    createInteractionSet.choiceSet = [NSMutableArray arrayWithArray:@[theOnlyChoice]];
+    theOnlyChoice.vrCommands = @[theOnlyChoiceName];
+    createInteractionSet.choiceSet = @[theOnlyChoice];
 
     return createInteractionSet;
 }
@@ -254,37 +267,36 @@ NS_ASSUME_NONNULL_BEGIN
     performInteraction.initialText = @"Select";
     performInteraction.initialText = @"Choose the only choice";
     performInteraction.interactionMode = SDLInteractionModeBoth;
-    performInteraction.timeout = @3000;
+    performInteraction.timeout = @5000;
     performInteraction.interactionLayout = SDLLayoutModeListOnly;
 
     // Prompts
     performInteraction.initialPrompt = [SDLTTSChunk textChunksFromString:@"Select a choice item"];
     performInteraction.helpPrompt = [SDLTTSChunk textChunksFromString:@"Select a choice item from the list"];
-    performInteraction.vrHelp = @[[[SDLVRHelpItem alloc] initWithText:@"Tap row" image:nil]];
     performInteraction.timeoutPrompt = [SDLTTSChunk textChunksFromString:@"Closing the menu"];
+
+    // VR Help
+    SDLVRHelpItem *helpItem = [[SDLVRHelpItem alloc] initWithText:@"Tap me" image:[ImageManager mainGraphicImage] position: 1];
+    performInteraction.vrHelp = @[helpItem];
 
     return performInteraction;
 }
 
 + (void)sdlex_sendPerformOnlyChoiceInteractionWithManager:(SDLManager *)manager {
-    NSNumber *choiceSetId = @10000;
-    NSNumber *choiceId = @20000;
+    [manager sendRequest:[self.class sdlex_createPerformInteractionWithChoiceSetId:@(choiceSetId)]     withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLPerformInteractionResponse *performInteractionResponse = (SDLPerformInteractionResponse *)response;
 
-    [manager sendRequest:[self.class sdlex_createChoiceInteractionSetWithChoiceSetId:choiceSetId choiceId:choiceId] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-        if (![response.resultCode isEqualToEnum:SDLResultSuccess]) { return; }
-        [manager sendRequest:[self.class sdlex_createPerformInteractionWithChoiceSetId:choiceSetId]     withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-            SDLPerformInteractionResponse *performInteractionResponse = (SDLPerformInteractionResponse *)response;
+        if ((performInteractionResponse == nil) || (error != nil)) {
+            SDLLogE(@"Something went wrong, no perform interaction response: %@", error);
+        }
 
-            if ((performInteractionResponse == nil) || (error != nil)) {
-                SDLLogE(@"Something went wrong, no perform interaction response: %@", error);
-            }
+        SDLLogD(@"response: %@", performInteractionResponse);
 
-            if ([performInteractionResponse.choiceID isEqualToNumber:choiceId]) {
-                [manager sendRequest:[self sdlex_goodJobSpeak]];
-            } else {
-                [manager sendRequest:[self sdlex_youMissedItSpeak]];
-            }
-        }];
+        if ([performInteractionResponse.choiceID isEqualToNumber:@(choiceId)]) {
+            [manager sendRequest:[self sdlex_goodJobSpeak]];
+        } else {
+            [manager sendRequest:[self sdlex_youMissedItSpeak]];
+        }
     }];
 }
 

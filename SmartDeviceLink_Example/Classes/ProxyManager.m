@@ -178,6 +178,7 @@ NS_ASSUME_NONNULL_BEGIN
         self.firstTimeState = SDLHMIFirstStateNonNone;
 
         // Send menu, submenu and perform interaction choice sets commands
+        [ProxyMenuManager sendChoiceSetWithManager:self.sdlManager];
         [ProxyMenuManager sendMenuItemsWithManager:self.sdlManager];
     }
 
