@@ -49,22 +49,22 @@ NS_ASSUME_NONNULL_BEGIN
     // Perform interaction choice set
     [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Perform Interaction" handler:^{
         [self.class sdlex_sendPerformOnlyChoiceInteractionWithManager:manager];
-    }] withResponseHandler:nil];
+    }]];
 
     // Alert maneuver - this only works with app type NAVIGATION
     [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Alert Maneuver" handler:^{
         [self.class sdlex_createAlertManeuverWithManager:manager];
-    }] withResponseHandler:nil];
+    }]];
 
     // Alert
     [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Alert" handler:^{
         [AlertManager defaultAlertWithManager:manager];
-    }] withResponseHandler:nil];
+    }]];
 
     // Scrollable message
     [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Scrollable Message" handler:^{
         [self.class sdlex_createScrollableMessageWithManager:manager];
-    }] withResponseHandler:nil];
+    }]];
 
     // Change registration
     [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Change Registration" handler:^{
@@ -144,7 +144,7 @@ NS_ASSUME_NONNULL_BEGIN
     // Get Vehicle Data
     [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Get Vehicle Data" handler:^{
         [self.class sdlex_sendGetVehicleDataWithManager:manager];
-    }] withResponseHandler:nil];
+    }]];
 
     // Subscribe Vehicle Data
     [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Subscribe Vehicle Data" handler:^{
@@ -166,49 +166,20 @@ NS_ASSUME_NONNULL_BEGIN
         [self.class sdlex_resetGlobalProperties:manager];
     }]];
 
-    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Show Read DID" handler:^{
-    //        [self.class sdlex_showReadDID:self.sdlManager];
-    //    }]];
-    //
-    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Set Global Properties" handler:^{
-    //        [self.class sdlex_setGlobalProperties:self.sdlManager];
-    //    }]];
+    // Show read DID
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Show Read DID" handler:^{
+        [self.class sdlex_showReadDID:manager];
+    }]];
 
-    //    commandId += [manager sdlex_predefinedLayouts].count;
+    // Set global properties
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Set Global Properties" handler:^{
+        [self.class sdlex_setGlobalProperties:manager];
+    }]];
 
-    //    [self.sdlManager sendRequest:[AddCommandManager addCommandWithManager:self.sdlManager commandId:(commandId++) menuName:@"Speak App Name" handler:^{
-    //        [self.sdlManager sendRequest:[self.class sdlex_appNameSpeak]];
-    //    }] withResponseHandler:nil];
-    //
-    //
-    //    dispatch_group_t dataDispatchGroup = dispatch_group_create();
-    //    dispatch_group_enter(dataDispatchGroup);
-
-
-    //    dispatch_group_enter(dataDispatchGroup);
-    //    [self.sdlManager.fileManager uploadFile:[self.class sdlex_pointingSoftButtonArtwork] completionHandler:^(BOOL success, NSUInteger bytesAvailable, NSError * _Nullable error) {
-    //        dispatch_group_leave(dataDispatchGroup);
-    //
-    //        if (success == NO) {
-    //            NSLog(@"Something went wrong, image could not upload: %@", error);
-    //            return;
-    //        }
-    //    }];
-
-    //    dispatch_group_enter(dataDispatchGroup);
-    //    [self.sdlManager sendRequest:[self.class sdlex_createOnlyChoiceInteractionSet] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-    //        // Interaction choice set ready
-    //        dispatch_group_leave(dataDispatchGroup);
-    //    }];
-
-    //    dispatch_group_leave(dataDispatchGroup);
-    //    dispatch_group_notify(dataDispatchGroup, dispatch_get_main_queue(), ^{
-    //
-    //    });
-
-    //    self.initialShowState = SDLHMIInitialShowStateDataAvailable;
-    //    [self sdlex_showInitialData];
-
+    // Speech
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Speak App Name" handler:^{
+        [manager sendRequest:[self.class sdlex_appNameSpeak]];
+    }]];
 }
 
 #pragma mark - Templates menu and submenu
@@ -280,18 +251,17 @@ NS_ASSUME_NONNULL_BEGIN
 + (SDLPerformInteraction *)sdlex_createPerformInteractionWithChoiceSetId:(NSNumber *)choiceSetId {
     SDLPerformInteraction *performInteraction = [[SDLPerformInteraction alloc] init];
     performInteraction.interactionChoiceSetIDList = @[choiceSetId];
-//    performInteraction.initialText = @"Select";
-
-//    performInteraction.initialText = @"Choose the only choice";
-//    performInteraction.interactionMode = SDLInteractionModeBoth;
-//    performInteraction.timeout = @3000;
-//    performInteraction.interactionLayout = SDLLayoutModeListOnly;
+    performInteraction.initialText = @"Select";
+    performInteraction.initialText = @"Choose the only choice";
+    performInteraction.interactionMode = SDLInteractionModeBoth;
+    performInteraction.timeout = @3000;
+    performInteraction.interactionLayout = SDLLayoutModeListOnly;
 
     // Prompts
-//    performInteraction.initialPrompt = [SDLTTSChunk textChunksFromString:@"Select a choice item"];
-//    performInteraction.helpPrompt = [SDLTTSChunk textChunksFromString:@"Select a choice item from the list"];
-//    performInteraction.vrHelp = @[[[SDLVRHelpItem alloc] initWithText:@"Tap row" image:nil]];
-//    performInteraction.timeoutPrompt = [SDLTTSChunk textChunksFromString:@"Closing the menu"];
+    performInteraction.initialPrompt = [SDLTTSChunk textChunksFromString:@"Select a choice item"];
+    performInteraction.helpPrompt = [SDLTTSChunk textChunksFromString:@"Select a choice item from the list"];
+    performInteraction.vrHelp = @[[[SDLVRHelpItem alloc] initWithText:@"Tap row" image:nil]];
+    performInteraction.timeoutPrompt = [SDLTTSChunk textChunksFromString:@"Closing the menu"];
 
     return performInteraction;
 }
