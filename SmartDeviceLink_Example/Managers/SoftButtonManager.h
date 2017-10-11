@@ -15,17 +15,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Soft button init
 
-+ (SDLSoftButton *)createSoftButtonWithText:(NSString *)text softButtonId:(int)softButtonId manager:(SDLManager *)manager handler:(nullable void (^)(void))handler;
++ (SDLSoftButton *)createSoftButtonWithText:(NSString *)text softButtonId:(int)softButtonId manager:(nullable SDLManager *)manager handler:(nullable void (^)(void))handler;
 
-+ (SDLSoftButton *)createSoftButtonWithImage:(NSString *)text imageName:(NSString *)imageName softButtonId:(int)softButtonId manager:(SDLManager *)manager handler:(nullable void (^)(void))handler;
++ (SDLSoftButton *)createSoftButtonWithImageName:(NSString *)imageName softButtonId:(int)softButtonId manager:(nullable SDLManager *)manager handler:(nullable void (^)(void))handler;
 
-+ (SDLSoftButton *)createSoftButtonWithTextAndImage:(NSString *)text imageName:(NSString *)imageName softButtonId:(int)softButtonId manager:(SDLManager *)manager handler:(nullable void (^)(void))handler;
++ (SDLSoftButton *)createSoftButtonWithTextAndImage:(NSString *)text imageName:(NSString *)imageName softButtonId:(int)softButtonId manager:(nullable SDLManager *)manager handler:(nullable void (^)(void))handler;
 
-#pragma mark - Soft button array
+#pragma mark - Soft button groups
 
 + (NSMutableArray<SDLSoftButton *> *)softButtonsWithManager:(SDLManager *)manager;
 + (NSMutableArray<SDLSoftButton *> *)mediaTemplateSoftButtonsWithManager:(SDLManager *)manager image:(SDLImage *)image;
-+ (NSArray<SDLSoftButton *> *)alertButtonsWithManager:(SDLManager *)manager;
++ (NSArray<SDLSoftButton *> *)alertButtons;
++ (NSArray<SDLSoftButton *> *)homeSoftButtonsWithManager:(SDLManager *)manager;
 
 @end
 

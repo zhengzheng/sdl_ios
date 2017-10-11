@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)alertCommand_showText:(NSString *)text softButtons:(nullable NSArray<SDLSoftButton *> *)softButtons duration:(int)duration withManager:(SDLManager *)manager;
 
++ (void)defaultAlertWithManager:(SDLManager *)manager;
+
 @end
 
 NS_ASSUME_NONNULL_END

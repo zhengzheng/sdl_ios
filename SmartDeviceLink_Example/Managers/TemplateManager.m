@@ -21,6 +21,15 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)changeTemplateWithManager:(SDLManager *)manager toTemplate:(SDLPredefinedLayout)template image:(SDLImage *)image {
     void (^templateChangedHandler)(void);
 
+    if (![manager.registerResponse.displayCapabilities.templatesAvailable containsObject:template]) {
+        [AlertManager
+         alertCommand_showText:[NSString stringWithFormat:@"This template, %@, is not supported on this head unit (%@)", template, manager.registerResponse.displayCapabilities.displayType]
+         softButtons:[SoftButtonManager alertButtons]
+         duration:5
+         withManager:manager];
+        return;
+    }
+
     if ([template isEqualToEnum:SDLPredefinedLayoutMedia]) {
         templateChangedHandler = ^{
             [ShowManager showAll_mediaTemplate_withManager:manager image:image];
@@ -71,12 +80,17 @@ NS_ASSUME_NONNULL_BEGIN
         templateChangedHandler = ^{
             // TODO: not sure what default does...
         };
+    } else if ([template isEqualToEnum:SDLPredefinedLayoutOnscreenPresets]) {
+        templateChangedHandler = ^{
+            [ShowManager showCommand_showPresets_withManager:manager image:image];
+        };
     } else if ([template isEqualToEnum:SDLPredefinedLayoutNavigationList] ||
                [template isEqualToEnum:SDLPredefinedLayoutNavigationKeyboard] ||
                [template isEqualToEnum:SDLPredefinedLayoutNavigationFullscreenMap]) {
         if (![manager.configuration.lifecycleConfig.appType isEqualToEnum:SDLAppHMITypeNavigation]) {
+            SDLLogW(@"The template, %@, can only be shown when the app type is NAVIGATION. The app type is: %@", template, manager.configuration.lifecycleConfig.appType);
             // Navigation templates can only be used when the appType has been set to NAVIGATION
-            [AlertManager alertCommand_showText:[NSString stringWithFormat:@"Navigation templates can only be used when the appType has been set to NAVIGATION. The appType has been set to %@ for this app", manager.configuration.lifecycleConfig.appType] softButtons:[SoftButtonManager alertButtonsWithManager:manager] duration:5 withManager:manager];
+            [AlertManager alertCommand_showText:[NSString stringWithFormat:@"Navigation templates can only be used when the appType has been set to NAVIGATION. The appType has been set to %@ for this app", manager.configuration.lifecycleConfig.appType] softButtons:[SoftButtonManager alertButtons] duration:5 withManager:manager];
             return;
         } else {
             templateChangedHandler = ^{
@@ -106,3 +120,4 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+

@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation SubscribeButtonManager
 
+#pragma mark - Individual subscribe buttons
+
 + (SDLSubscribeButton *)createSubscribeButtonWithName:(SDLButtonName)subscribeButtonName withManager:(SDLManager *)manager {
     return [[SDLSubscribeButton alloc] initWithButtonName:subscribeButtonName handler:^(SDLOnButtonPress * _Nullable buttonPress, SDLOnButtonEvent * _Nullable buttonEvent) {
         if (![buttonEvent.buttonEventMode isEqualToEnum:SDLButtonEventModeButtonDown]) { return; }
@@ -25,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
     return [[SDLUnsubscribeButton alloc] initWithButtonName:subscribeButtonName];
 }
 
+#pragma mark - Subscribe button arrays
+
 + (NSArray<SDLSubscribeButton *> *)mediaTemplateSubscribeButtonsWithManager:(SDLManager *)manager {
     NSMutableArray *subscribeButtons = [NSMutableArray array];
     // Tuneup and Tunedown are hard buttons only, the rest are both hard and soft buttons
@@ -35,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
     return subscribeButtons;
 }
 
-+ (NSArray<SDLSubscribeButton *> *)anyTemplateSubscribeButtonsWithManager:(SDLManager *)manager {
++ (NSArray<SDLSubscribeButton *> *)presetSubscribeButtonsWithManager:(SDLManager *)manager {
     NSMutableArray *subscribeButtons = [NSMutableArray array];
     // Hard buttons only (i.e. no corresponding soft button will show up on the screen)
     NSArray<SDLButtonName> *allTemplateSubscribeButtons = [[NSArray alloc] initWithObjects:SDLButtonNameSearch, SDLButtonNameCustomButton, SDLButtonNamePreset0, SDLButtonNamePreset1, SDLButtonNamePreset2, SDLButtonNamePreset3, SDLButtonNamePreset4, SDLButtonNamePreset5, SDLButtonNamePreset6, SDLButtonNamePreset7, SDLButtonNamePreset8, SDLButtonNamePreset9, nil];

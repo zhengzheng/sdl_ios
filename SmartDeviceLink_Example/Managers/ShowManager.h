@@ -16,6 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (SDLShow *)showCommand_showText:(Boolean)showText showMediaTrack:(Boolean)showMediaTrack showSoftButtons:(Boolean)showSoftButtons showImage:(nullable SDLImage *)showImage withManager:(SDLManager *)manager;
 + (void)showAll_mediaTemplate_withManager:(SDLManager *)manager image:(nullable SDLImage *)image;
 + (void)updateShowAll_mediaTemplate_withManager:(SDLManager *)manager image:(nullable SDLImage *)image;
++ (void)showCommand_showPresets_withManager:(SDLManager *)manager image:(nullable SDLImage *)image;
+
++ (void)showHomeTextWithManager:(SDLManager *)manager;
++ (void)showHomeTextAndImagesWithManager:(SDLManager *)manager;
 
 @end
 

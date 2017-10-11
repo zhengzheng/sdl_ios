@@ -1031,6 +1031,9 @@
 		88EED83B1F33BECB00E6C42E /* SDLHapticRectSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 88EED83A1F33BECB00E6C42E /* SDLHapticRectSpec.m */; };
 		88EED83E1F33C5A400E6C42E /* SDLSendHapticData.h in Headers */ = {isa = PBXBuildFile; fileRef = 88EED83C1F33C5A400E6C42E /* SDLSendHapticData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88EED83F1F33C5A400E6C42E /* SDLSendHapticData.m in Sources */ = {isa = PBXBuildFile; fileRef = 88EED83D1F33C5A400E6C42E /* SDLSendHapticData.m */; };
+		88FD9E1D1F8D466F00E3F059 /* ImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FD9E1C1F8D466F00E3F059 /* ImageManager.m */; };
+		88FD9E201F8D558D00E3F059 /* HomeSoftButtonsToggleStateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FD9E1F1F8D558D00E3F059 /* HomeSoftButtonsToggleStateManager.m */; };
+		88FD9E231F8D5BA600E3F059 /* ProxyMenuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FD9E221F8D5BA600E3F059 /* ProxyMenuManager.m */; };
 		8B7B319A1F2F7B5700BDC38D /* SDLVideoStreamingCodec.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B7B31981F2F7B5700BDC38D /* SDLVideoStreamingCodec.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8B7B319B1F2F7B5700BDC38D /* SDLVideoStreamingCodec.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B7B31991F2F7B5700BDC38D /* SDLVideoStreamingCodec.m */; };
 		8B7B319E1F2F7CF700BDC38D /* SDLVideoStreamingProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B7B319C1F2F7CF700BDC38D /* SDLVideoStreamingProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2263,6 +2266,12 @@
 		88EED83A1F33BECB00E6C42E /* SDLHapticRectSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLHapticRectSpec.m; sourceTree = "<group>"; };
 		88EED83C1F33C5A400E6C42E /* SDLSendHapticData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLSendHapticData.h; sourceTree = "<group>"; };
 		88EED83D1F33C5A400E6C42E /* SDLSendHapticData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLSendHapticData.m; sourceTree = "<group>"; };
+		88FD9E1B1F8D466F00E3F059 /* ImageManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageManager.h; sourceTree = "<group>"; };
+		88FD9E1C1F8D466F00E3F059 /* ImageManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageManager.m; sourceTree = "<group>"; };
+		88FD9E1E1F8D558D00E3F059 /* HomeSoftButtonsToggleStateManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeSoftButtonsToggleStateManager.h; sourceTree = "<group>"; };
+		88FD9E1F1F8D558D00E3F059 /* HomeSoftButtonsToggleStateManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeSoftButtonsToggleStateManager.m; sourceTree = "<group>"; };
+		88FD9E211F8D5BA600E3F059 /* ProxyMenuManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxyMenuManager.h; sourceTree = "<group>"; };
+		88FD9E221F8D5BA600E3F059 /* ProxyMenuManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ProxyMenuManager.m; sourceTree = "<group>"; };
 		8B7B31981F2F7B5700BDC38D /* SDLVideoStreamingCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLVideoStreamingCodec.h; sourceTree = "<group>"; };
 		8B7B31991F2F7B5700BDC38D /* SDLVideoStreamingCodec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLVideoStreamingCodec.m; sourceTree = "<group>"; };
 		8B7B319C1F2F7CF700BDC38D /* SDLVideoStreamingProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLVideoStreamingProtocol.h; sourceTree = "<group>"; };
@@ -2996,6 +3005,8 @@
 			children = (
 				5D48329F1A92868E00252386 /* ProxyManager.h */,
 				5D4832A01A92868E00252386 /* ProxyManager.m */,
+				88FD9E211F8D5BA600E3F059 /* ProxyMenuManager.h */,
+				88FD9E221F8D5BA600E3F059 /* ProxyMenuManager.m */,
 				8822558E1F8BB09500C13EED /* Managers */,
 			);
 			name = SDL;
@@ -4402,6 +4413,10 @@
 				8822558C1F8BAE4600C13EED /* AddCommandManager.m */,
 				8850CC331F8BBAAC0098615C /* AlertManager.h */,
 				8850CC341F8BBAAC0098615C /* AlertManager.m */,
+				88FD9E1E1F8D558D00E3F059 /* HomeSoftButtonsToggleStateManager.h */,
+				88FD9E1F1F8D558D00E3F059 /* HomeSoftButtonsToggleStateManager.m */,
+				88FD9E1B1F8D466F00E3F059 /* ImageManager.h */,
+				88FD9E1C1F8D466F00E3F059 /* ImageManager.m */,
 				882255881F8BADDC00C13EED /* MediaClockTimerManager.h */,
 				882255891F8BADDC00C13EED /* MediaClockTimerManager.m */,
 				8822558F1F8BB0A600C13EED /* ShowManager.h */,
@@ -5137,11 +5152,14 @@
 				5D48329D1A8EA33D00252386 /* Preferences.m in Sources */,
 				8822558A1F8BADDC00C13EED /* MediaClockTimerManager.m in Sources */,
 				5D59350F1A855EB300687FB9 /* AppDelegate.m in Sources */,
+				88FD9E201F8D558D00E3F059 /* HomeSoftButtonsToggleStateManager.m in Sources */,
 				8822558D1F8BAE4600C13EED /* AddCommandManager.m in Sources */,
 				5D5935121A855EBE00687FB9 /* main.m in Sources */,
 				8850CC351F8BBAAC0098615C /* AlertManager.m in Sources */,
 				5D4832A81A95191B00252386 /* ConnectionAnimatedTransition.m in Sources */,
+				88FD9E231F8D5BA600E3F059 /* ProxyMenuManager.m in Sources */,
 				5D4832A11A92868E00252386 /* ProxyManager.m in Sources */,
+				88FD9E1D1F8D466F00E3F059 /* ImageManager.m in Sources */,
 				5D0218F61A8E79C400D1BF62 /* ConnectionTCPTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
