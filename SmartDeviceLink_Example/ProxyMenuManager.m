@@ -180,6 +180,11 @@ NS_ASSUME_NONNULL_BEGIN
     [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Speak App Name" handler:^{
         [manager sendRequest:[self.class sdlex_appNameSpeak]];
     }]];
+
+    // Haptic rect
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Send Haptic Rect" handler:^{
+        [self.class sdlex_createHapticRectWithManager:manager];
+    }]];
 }
 
 #pragma mark - Templates menu and submenu
@@ -653,6 +658,18 @@ static const int choiceId = 10005;
     }];
     scrollableMessage.softButtons = [@[cancelButton] mutableCopy];
     [manager sendRequest:scrollableMessage];
+}
+
++ (void)sdlex_createHapticRectWithManager:(SDLManager *)manager {
+    SDLHapticRect *hapticRect = [[SDLHapticRect alloc] initWithId:1 rect:[[SDLRectangle alloc] initWithX:12.34 y:42.3 width:69 height:69]];
+    SDLSendHapticData *hapticData = [[SDLSendHapticData alloc] initWithHapticRectData:@[hapticRect]];
+
+    [manager sendRequest:hapticData withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLAlert* alert = [[SDLAlert alloc] init];
+        alert.alertText1 = @"Send Haptic Data RPC sent.";
+        alert.alertText2 = [NSString stringWithFormat:@"Response: %@", response.resultCode];
+        [manager sendRequest:alert];;
+    }];
 }
 
 @end
