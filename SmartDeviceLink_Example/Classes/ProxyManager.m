@@ -10,8 +10,10 @@
 #import "SoftButtonManager.h"
 #import "TemplateManager.h"
 
-NSString *const SDLAppName = @"SDL Example App";
-NSString *const SDLAppId = @"9999";
+NSString *const SDLAppName = @"Antelope";
+// @"SDL Example App";
+NSString *const SDLAppId = @"2626965156";
+// @"9999";
 
 typedef NS_ENUM(NSUInteger, SDLHMIFirstState) {
     SDLHMIFirstStateNone,

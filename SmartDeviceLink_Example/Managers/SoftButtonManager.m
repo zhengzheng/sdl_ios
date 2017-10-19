@@ -73,7 +73,9 @@ NS_ASSUME_NONNULL_BEGIN
              duration:5
              withManager:manager];
         };
-        [softButtons addObject:[self.class createSoftButtonWithText:[NSString stringWithFormat:@"Button%d", i] softButtonId:i manager:manager handler:softButtonHandler]];
+        [softButtons addObject:[self.class createSoftButtonWithImageName:[ImageManager hexagonOnImageName] softButtonId:i manager:manager handler:softButtonHandler]];
+//        [softButtons addObject:[self.class createSoftButtonWithTextAndImage:[NSString stringWithFormat:@"Button%d", i] imageName:[ImageManager starImageName] softButtonId:i manager:manager handler:softButtonHandler]];
+//        [softButtons addObject:[self.class createSoftButtonWithText:[NSString stringWithFormat:@"Button%d", i] softButtonId:i manager:manager handler:softButtonHandler]];
     }
     return softButtons;
 }

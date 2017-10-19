@@ -308,7 +308,10 @@ static const int choiceId = 10005;
 #pragma mark - Vehicle Data
 
 + (void)sdlex_subscribeVehicleData:(SDLManager *)manager {
-    SDLSubscribeVehicleData *subscribeVehicleData = [[SDLSubscribeVehicleData alloc] initWithAccelerationPedalPosition:YES airbagStatus:YES beltStatus:YES bodyInformation:YES clusterModeStatus:YES deviceStatus:YES driverBraking:YES eCallInfo:YES emergencyEvent:YES engineTorque:YES externalTemperature:YES fuelLevel:YES fuelLevelState:YES gps:YES headLampStatus:YES instantFuelConsumption:YES myKey:YES odometer:YES prndl:YES rpm:YES speed:YES steeringWheelAngle:YES tirePressure:YES wiperStatus:YES];
+    SDLSubscribeVehicleData *subscribeVehicleData = [[SDLSubscribeVehicleData alloc] init];
+    subscribeVehicleData.accPedalPosition = @YES;
+    subscribeVehicleData.gps = @YES;
+    // [[SDLSubscribeVehicleData alloc] initWithAccelerationPedalPosition:YES airbagStatus:YES beltStatus:YES bodyInformation:YES clusterModeStatus:YES deviceStatus:YES driverBraking:YES eCallInfo:YES emergencyEvent:YES engineTorque:YES externalTemperature:YES fuelLevel:YES fuelLevelState:YES gps:YES headLampStatus:YES instantFuelConsumption:YES myKey:YES odometer:YES prndl:YES rpm:YES speed:YES steeringWheelAngle:YES tirePressure:YES wiperStatus:YES];
     [manager sendRequest:subscribeVehicleData withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
         [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Subscribe Vehicle Data RPC sent. Response: %@", response.resultCode]];
     }];
@@ -316,6 +319,11 @@ static const int choiceId = 10005;
 
 + (void)sdlex_unsubscribeVehicleData:(SDLManager *)manager {
     SDLUnsubscribeVehicleData *unsubscribeVehicleData = [[SDLUnsubscribeVehicleData alloc] init];
+    unsubscribeVehicleData.accPedalPosition = @YES;
+    // [[SDLUnsubscribeVehicleData alloc] initWithAccelerationPedalPosition:YES airbagStatus:YES beltStatus:YES bodyInformation:YES clusterModeStatus:YES deviceStatus:YES driverBraking:YES eCallInfo:YES emergencyEvent:YES engineTorque:YES externalTemperature:NO fuelLevel:YES fuelLevelState:YES gps:YES headLampStatus:YES instantFuelConsumption:YES myKey:YES odometer:YES prndl:YES rpm:YES speed:YES steeringWheelAngle:YES tirePressure:YES wiperStatus:YES];
+
+    // [[SDLUnsubscribeVehicleData alloc] initWithAccelerationPedalPosition:YES airbagStatus:NO beltStatus:NO bodyInformation:NO clusterModeStatus:NO deviceStatus:NO driverBraking:NO eCallInfo:NO emergencyEvent:NO engineTorque:NO externalTemperature:NO fuelLevel:NO fuelLevelState:NO gps:NO headLampStatus:NO instantFuelConsumption:NO myKey:NO odometer:NO prndl:NO rpm:NO speed:NO steeringWheelAngle:NO tirePressure:NO wiperStatus:NO];
+    // unsubscribeVehicleData.accPedalPosition = @YES;
     [manager sendRequest:unsubscribeVehicleData withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
         [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Unsubscribe Vehicle Data RPC sent. Response: %@", response.resultCode]];
     }];
