@@ -13,19 +13,36 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation AlertManager
 
-+ (void)alertCommand_showText:(NSString *)text softButtons:(nullable NSArray<SDLSoftButton *> *)softButtons duration:(int)duration withManager:(SDLManager *)manager {
++ (SDLAlert *)sdlex_defaultAlert:(NSString *)text1 text2:(nullable NSString *)text2 softButtons:(nullable NSArray<SDLSoftButton *> *)softButtons duration:(int)duration {
     int durationInMilliseconds = duration * 1000;
-    SDLAlert *alert = [[SDLAlert alloc] initWithAlertText1:text alertText2:nil alertText3:nil duration:durationInMilliseconds softButtons:softButtons];
-    alert.ttsChunks = [SDLTTSChunk textChunksFromString:text];
+    SDLAlert *alert = [[SDLAlert alloc] initWithAlertText1:text1 alertText2:text2 alertText3:nil duration:durationInMilliseconds softButtons:softButtons];
+    alert.ttsChunks = [SDLTTSChunk textChunksFromString:text1];
+    return alert;
+}
+
++ (void)sdlex_alertResponse:(nullable SDLRPCResponse *)response error:(nullable NSError *)error {
+    if (error != nil) {
+        SDLLogE(@"Error showing the alert (%@)", error);
+    } else if (![response.resultCode isEqualToEnum:SDLResultSuccess]) {
+        SDLLogE(@"The alert was not shown successfully (%@)", response.resultCode);
+    } else {
+        SDLLogV(@"Alert shown successfully");
+    }
+}
+
++ (void)alertCommand_showText:(NSString *)text softButtons:(nullable NSArray<SDLSoftButton *> *)softButtons duration:(int)duration withManager:(SDLManager *)manager {
+    SDLAlert *alert = [self.class sdlex_defaultAlert:text text2:nil softButtons:softButtons duration:duration];
 
     [manager sendRequest:alert withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-        if (error != nil) {
-            SDLLogE(@"Error showing the alert (%@)", error);
-        } else if (![response.resultCode isEqualToEnum:SDLResultSuccess]) {
-            SDLLogE(@"The alert was not shown successfully (%@)", response.resultCode);
-        } else {
-            SDLLogD(@"Alert shown successfully");
-        }
+        [self.class sdlex_alertResponse:response error:error];
+    }];
+}
+
++ (void)alertCommand_showText:(NSString *)text1 text2:(NSString *)text2 softButtons:(nullable NSArray<SDLSoftButton *> *)softButtons duration:(int)duration withManager:(SDLManager *)manager {
+    SDLAlert *alert = [self.class sdlex_defaultAlert:text1 text2:text2 softButtons:softButtons duration:duration];
+
+    [manager sendRequest:alert withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_alertResponse:response error:error];
     }];
 }
 

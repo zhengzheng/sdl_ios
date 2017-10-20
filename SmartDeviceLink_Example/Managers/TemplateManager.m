@@ -20,8 +20,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)changeTemplateWithManager:(SDLManager *)manager toTemplate:(SDLPredefinedLayout)template image:(SDLImage *)image {
     void (^templateChangedHandler)(void);
-
     if (![manager.registerResponse.displayCapabilities.templatesAvailable containsObject:template]) {
+
+        // For SDLCore - only supports DEFAULT template
+       [manager sendRequest:[[SDLSetDisplayLayout alloc] initWithPredefinedLayout:SDLPredefinedLayoutDefault]];
+
         [AlertManager
          alertCommand_showText:[NSString stringWithFormat:@"This template, %@, is not supported on this head unit (%@)", template, manager.registerResponse.displayCapabilities.displayType]
          softButtons:[SoftButtonManager alertButtons]

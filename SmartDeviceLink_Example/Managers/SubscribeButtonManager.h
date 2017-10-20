@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (SDLUnsubscribeButton *)removeSubscribeButtonWithName:(SDLButtonName)subscribeButtonName ;
 
 + (NSArray<SDLSubscribeButton *> *)mediaTemplateSubscribeButtonsWithManager:(SDLManager *)manager;
++ (NSArray<SDLUnsubscribeButton *> *)mediaTemplateUnSubscribeButtons;
 + (NSArray<SDLSubscribeButton *> *)presetSubscribeButtonsWithManager:(SDLManager *)manager;
 
 @end

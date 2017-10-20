@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (SDLAddCommand *)addCommandWithManager:(SDLManager *)manager commandId:(int)commandId menuName:(NSString *)menuName handler:(void (^)(void))handler;
 + (SDLDeleteCommand *)deleteCommandWithId:(int)commandId;
++ (SDLDeleteCommand *)deleteSubMenuCommandWithId:(int)commandId;
 
 @end
 

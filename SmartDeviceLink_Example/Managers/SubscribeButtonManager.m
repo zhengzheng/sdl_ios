@@ -29,14 +29,25 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Subscribe button arrays
 
+// Tuneup and Tunedown are hard buttons only, the rest are both hard and soft buttons
++ (NSArray<SDLButtonName> *)sdlex_mediaTemplateSubscribeButtonNames {
+    return [[NSArray alloc] initWithObjects:SDLButtonNameOk, SDLButtonNameSeekLeft, SDLButtonNameSeekRight, SDLButtonNameTuneUp, SDLButtonNameTuneDown, nil];
+}
+
 + (NSArray<SDLSubscribeButton *> *)mediaTemplateSubscribeButtonsWithManager:(SDLManager *)manager {
     NSMutableArray *subscribeButtons = [NSMutableArray array];
-    // Tuneup and Tunedown are hard buttons only, the rest are both hard and soft buttons
-    NSArray<SDLButtonName> *mediaTemplateSubscribeButtons = [[NSArray alloc] initWithObjects:SDLButtonNameOk, SDLButtonNameSeekLeft, SDLButtonNameSeekRight, SDLButtonNameTuneUp, SDLButtonNameTuneDown, nil];
-    for(SDLButtonName buttonName in mediaTemplateSubscribeButtons) {
+    for(SDLButtonName buttonName in [self.class sdlex_mediaTemplateSubscribeButtonNames]) {
         [subscribeButtons addObject:[self.class createSubscribeButtonWithName:buttonName withManager:manager]];
     }
     return subscribeButtons;
+}
+
++ (NSArray<SDLUnsubscribeButton *> *)mediaTemplateUnSubscribeButtons {
+    NSMutableArray *unSubscribeButtons = [NSMutableArray array];
+    for(SDLButtonName buttonName in [self.class sdlex_mediaTemplateSubscribeButtonNames]) {
+        [unSubscribeButtons addObject:[self.class removeSubscribeButtonWithName:buttonName]];
+    }
+    return unSubscribeButtons;
 }
 
 + (NSArray<SDLSubscribeButton *> *)presetSubscribeButtonsWithManager:(SDLManager *)manager {

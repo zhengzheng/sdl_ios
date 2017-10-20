@@ -10,9 +10,11 @@
 #import "AddCommandManager.h"
 #import "AlertManager.h"
 #import "ImageManager.h"
+#import "MediaClockTimerManager.h"
 #import "SDLNames.h"
 #import "ShowManager.h"
 #import "SoftButtonManager.h"
+#import "SubscribeButtonManager.h"
 #import "TemplateManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -131,11 +133,6 @@ NS_ASSUME_NONNULL_BEGIN
         [self.class sdlex_encodedSyncPData:manager];
     }]];
 
-    // End Audio Pass Thru
-    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"End Audio Pass Thru" handler:^{
-        [self.class sdlex_endAudioPassThru:manager];
-    }]];
-
     // Send Location
     [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Send Location" handler:^{
         [self.class sdlex_sendLocation:manager];
@@ -184,6 +181,51 @@ NS_ASSUME_NONNULL_BEGIN
     // Haptic rect
     [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Send Haptic Rect" handler:^{
         [self.class sdlex_createHapticRectWithManager:manager];
+    }]];
+
+    // Button press
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Button Press" handler:^{
+        [self.class sdlex_createButtonPressWithManager:manager];
+    }]];
+
+    // Subscribe button
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Subscribe buttons" handler:^{
+        [self.class sdlex_subscribeButtonWithManager:manager];
+    }]];
+
+    // Unsubscribe button
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Unsubscribe buttons" handler:^{
+        [self.class sdlex_unSubscribeButtonWithManager:manager];
+    }]];
+
+    // Get interior vehicle data
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Get Interior vehicle data" handler:^{
+        [self.class sdlex_getInteriorVehicleDataWithManager:manager];
+    }]];
+
+    // Set interior vehicle data
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Set Interior vehicle data" handler:^{
+        [self.class sdlex_setInteriorVehicleDataWithManager:manager];
+    }]];
+
+    // Audio pass thru
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Send Audio Pass Thru" handler:^{
+        [self.class sdlex_audioPassThruRequestWithManager:manager];
+    }]];
+
+    // End audio pass thru
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Send End Audio Pass Thru" handler:^{
+        [self.class sdlex_endAudioPassThruRequestWithManager:manager];
+    }]];
+
+    // Show Media playback bar
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Set Media Clock Timer" handler:^{
+        [self.class sdlex_showMediaClockTimerWithManager:manager];
+    }]];
+
+    // Hide Media playback bar
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Remove Media Clock Timer" handler:^{
+        [self.class sdlex_hideMediaClockTimerWithManager:manager];
     }]];
 }
 
@@ -398,6 +440,40 @@ static const int choiceId = 10005;
     }];
 }
 
++ (void)sdlex_getInteriorVehicleDataWithManager:(SDLManager *)manager {
+    SDLGetInteriorVehicleData *interiorVehicleData = [[SDLGetInteriorVehicleData alloc] init];
+    interiorVehicleData.moduleType = SDLModuleTypeRadio;
+    interiorVehicleData.subscribe = @YES;
+    [manager sendRequest:interiorVehicleData withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [AlertManager alertCommand_showText:@"Get Interior Vehicle Data RPC sent" text2:[NSString stringWithFormat:@"Response %@", response] softButtons:nil duration:3 withManager:manager];
+    }];
+}
+
++ (void)sdlex_setInteriorVehicleDataWithManager:(SDLManager *)manager {
+    SDLRadioControlData* radioData = [[SDLRadioControlData alloc] init];
+    radioData.frequencyInteger = @101;
+    radioData.frequencyFraction = @7;
+    radioData.band = SDLRadioBandAM;
+    radioData.rdsData = [[SDLRDSData alloc] init];
+    radioData.availableHDs = @2;
+    radioData.hdChannel = @2;
+    radioData.signalStrength = @54;
+    radioData.signalChangeThreshold = @76;
+    radioData.radioEnable = @YES;
+    radioData.state = SDLRadioStateNotFound;
+
+    SDLModuleData *moduleData = [[SDLModuleData alloc] init];
+    moduleData.moduleType = SDLModuleTypeRadio;
+    moduleData.radioControlData = radioData;
+
+    SDLSetInteriorVehicleData *interiorVehicleData = [[SDLSetInteriorVehicleData alloc] init];
+    interiorVehicleData.moduleData = moduleData;
+
+    [manager sendRequest:interiorVehicleData withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [AlertManager alertCommand_showText:@"Set Interior Vehicle Data RPC sent" text2:[NSString stringWithFormat:@"Response %@", response] softButtons:nil duration:3 withManager:manager];
+    }];
+}
+
 #pragma mark - Waypoints
 
 + (void)sdlex_subscribeWaypoints:(SDLManager *)manager {
@@ -511,10 +587,63 @@ static const int choiceId = 10005;
     return speak;
 }
 
-+ (void)sdlex_endAudioPassThru:(SDLManager *)manager {
-    SDLEndAudioPassThru *endAudioPassThru = [[SDLEndAudioPassThru alloc] init];
-    [manager sendRequest:endAudioPassThru withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"End Audio Pass Thru RPC sent. Response: %@", response.resultCode]];
+#pragma mark - Buttons
+
++ (void)sdlex_subscribeButtonWithManager:(SDLManager *)manager {
+    for(SDLSubscribeButton *subscribeButton in [SubscribeButtonManager mediaTemplateSubscribeButtonsWithManager:manager]) {
+        [manager sendRequest:subscribeButton];
+    }
+}
+
++ (void)sdlex_unSubscribeButtonWithManager:(SDLManager *)manager {
+    for(SDLUnsubscribeButton *unsubscribeButton in [SubscribeButtonManager mediaTemplateUnSubscribeButtons]) {
+        [manager sendRequest:unsubscribeButton];
+    }
+}
+
+#pragma mark - Menu / PICS
+
++ (void)sdlex_deleteCommandWithManager:(SDLManager *)manager {
+
+}
+
++ (void)sdlex_deleteInteractionChoiceSetWithManager:(SDLManager *)manager {
+
+}
+
++ (void)sdlex_deleteSubMenuWithManager:(SDLManager *)manager {
+
+}
+
+#pragma mark - Timer
+
++ (void)sdlex_showMediaClockTimerWithManager:(SDLManager *)manager {
+    [manager sendRequest:[MediaClockTimerManager addMediaClockTimerWithManager:manager] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLLogV(@"show media clock timer response: %@", response.resultCode);
+    }];
+}
+
++ (void)sdlex_hideMediaClockTimerWithManager:(SDLManager *)manager {
+    [manager sendRequest:[MediaClockTimerManager removeMediaClockTimer] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLLogV(@"hide media clock timer response: %@", response.resultCode);
+    }];
+}
+
+#pragma mark - Audio
+
++ (void)sdlex_audioPassThruRequestWithManager:(SDLManager *)manager {
+    SDLPerformAudioPassThru *passThru = [[SDLPerformAudioPassThru alloc] initWithInitialPrompt:nil audioPassThruDisplayText1:@"Listening" audioPassThruDisplayText2:@"Say Something" samplingRate:SDLSamplingRate16KHZ bitsPerSample:SDLBitsPerSample16Bit audioType:SDLAudioTypePCM maxDuration:5000 muteAudio:true audioDataHandler:^(NSData * _Nullable audioData) {
+        SDLLogD(@"Getting audio data");
+    }];
+    [manager sendRequest:passThru withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLLogD(@"Got Peform Audio Pass Thru response: %@, error: %@, request: %@", response, error, request);
+    }];
+}
+
++ (void)sdlex_endAudioPassThruRequestWithManager:(SDLManager *)manager {
+    SDLEndAudioPassThru *endPassThru = [[SDLEndAudioPassThru alloc] init];
+    [manager sendRequest:endPassThru withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLLogD(@"Got End Peform Audio Pass Thru response: %@, error: %@, request: %@", response, error, request);
     }];
 }
 
@@ -537,21 +666,15 @@ static const int choiceId = 10005;
 }
 
 + (void)sdlex_setGlobalProperties:(SDLManager *)manager {
-    SDLSetGlobalProperties *globalProperties = [[SDLSetGlobalProperties alloc] init];
+    SDLSetGlobalProperties *globalProperties = [[SDLSetGlobalProperties alloc] initWithHelpText:@"new help text" timeoutText:@"new timeout text"];
 
-    SDLTTSChunk* chunk1 = [[SDLTTSChunk alloc] init];
-    SDLTTSChunk* chunk2 = [[SDLTTSChunk alloc] init];
-    SDLVRHelpItem* help = [[SDLVRHelpItem alloc] init];
-    SDLImage* image = [[SDLImage alloc] init];
-    SDLKeyboardProperties* keyboard = [[SDLKeyboardProperties alloc] init];
-
-    globalProperties.helpPrompt = [@[chunk1] mutableCopy];
-    globalProperties.timeoutPrompt = [@[chunk2] mutableCopy];
-    globalProperties.vrHelpTitle = @"vr";
-    globalProperties.vrHelp = [@[help] mutableCopy];
-    globalProperties.menuTitle = @"TheNewMenu";
-    globalProperties.menuIcon = image;
-    globalProperties.keyboardProperties = keyboard;
+//    globalProperties.helpPrompt = [SDLTTSChunk textChunksFromString:@"setting global properties"];
+//    globalProperties.timeoutPrompt = [SDLTTSChunk textChunksFromString:@"timing out"];
+//    globalProperties.vrHelpTitle = @"vr";
+//    globalProperties.vrHelp = @[[[SDLVRHelpItem alloc] initWithText:@"Voice Command" image:nil]];
+//    globalProperties.menuTitle = @"The New Menu";
+//    globalProperties.menuIcon = [ImageManager mainGraphicImage];
+//    // globalProperties.keyboardProperties
 
     [manager sendRequest:globalProperties withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
         [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Set Global Properties RPC sent. Response: %@", response.resultCode]];
@@ -677,6 +800,17 @@ static const int choiceId = 10005;
         alert.alertText1 = @"Send Haptic Data RPC sent.";
         alert.alertText2 = [NSString stringWithFormat:@"Response: %@", response.resultCode];
         [manager sendRequest:alert];;
+    }];
+}
+
++ (void)sdlex_createButtonPressWithManager:(SDLManager *)manager {
+    SDLButtonPress* buttonPress = [[SDLButtonPress alloc] init];
+    buttonPress.moduleType = SDLModuleTypeClimate;
+    buttonPress.buttonName = SDLButtonNameFanUp;
+    buttonPress.buttonPressMode = SDLButtonPressModeShort;
+
+    [manager sendRequest:buttonPress withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [AlertManager alertCommand_showText:@"Button Press RPC sent" text2:[NSString stringWithFormat:@"Response %@", response] softButtons:nil duration:3 withManager:manager];
     }];
 }
 
