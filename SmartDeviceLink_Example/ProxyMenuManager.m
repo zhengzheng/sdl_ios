@@ -227,6 +227,21 @@ NS_ASSUME_NONNULL_BEGIN
     [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Remove Media Clock Timer" handler:^{
         [self.class sdlex_hideMediaClockTimerWithManager:manager];
     }]];
+
+    // Delete AddCommand (menu item)
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Remove Menu Item" handler:^{
+        [self.class sdlex_deleteCommandWithManager:manager];
+    }]];
+
+    // Delete Submenu
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Remove Sub Menu" handler:^{
+        [self.class sdlex_deleteSubMenuWithManager:manager];
+    }]];
+
+    // Delete PICS
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Remove PICS" handler:^{
+        [self.class sdlex_deleteInteractionChoiceSetWithManager:manager];
+    }]];
 }
 
 #pragma mark - Templates menu and submenu
@@ -451,11 +466,11 @@ static const int choiceId = 10005;
 
 + (void)sdlex_setInteriorVehicleDataWithManager:(SDLManager *)manager {
     SDLRadioControlData* radioData = [[SDLRadioControlData alloc] init];
-    radioData.frequencyInteger = @101;
-    radioData.frequencyFraction = @7;
+    radioData.frequencyInteger = @87;
+    radioData.frequencyFraction = @9;
     radioData.band = SDLRadioBandAM;
     radioData.rdsData = [[SDLRDSData alloc] init];
-    radioData.availableHDs = @2;
+    radioData.availableHDs = @3;
     radioData.hdChannel = @2;
     radioData.signalStrength = @54;
     radioData.signalChangeThreshold = @76;
@@ -499,6 +514,13 @@ static const int choiceId = 10005;
 
 #pragma mark - Navigation
 
++ (void)sdlex_createAlertManeuverWithManager:(SDLManager *)manager directionText:(NSString *)directionText {
+    SDLAlertManeuver *alertManeuver = [[SDLAlertManeuver alloc] initWithTTS:directionText softButtons:nil];
+    [manager sendRequest:alertManeuver withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLLogD(@"Alert Maneuver RPC response %@", response.resultCode);
+    }];
+}
+
 + (void)sdlex_createAlertManeuverWithManager:(SDLManager *)manager {
     SDLAlertManeuver *alertManeuver = [[SDLAlertManeuver alloc] init];
     alertManeuver.ttsChunks = [SDLTTSChunk textChunksFromString:@"Alert maneuver example"];
@@ -517,9 +539,22 @@ static const int choiceId = 10005;
 }
 
 + (void)sdlex_showConstantTBT:(SDLManager *)manager {
-    SDLShowConstantTBT *constant = [[SDLShowConstantTBT alloc] init];
-    [manager sendRequest:constant withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-        [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Show Constant RPC sent. Response: %@", response.resultCode]];
+    SDLShowConstantTBT *tbt = [[SDLShowConstantTBT alloc] init];
+    tbt.navigationText1 = @"nav1";
+    tbt.navigationText2 = @"nav2";
+    tbt.eta = @"4/1/7015";
+    tbt.timeToDestination = @"5000 Years";
+    tbt.totalDistance = @"1 parsec";
+    tbt.turnIcon = [ImageManager mainGraphicImage];
+    tbt.nextTurnIcon = [ImageManager mainGraphicBlankImage];
+    tbt.distanceToManeuver = @2;
+    tbt.distanceToManeuverScale = @4;
+    tbt.maneuverComplete = @NO;
+    tbt.softButtons = [SoftButtonManager alertButtons];
+
+    [manager sendRequest:tbt withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        [self.class sdlex_createAlertManeuverWithManager:manager directionText:@"Right in 5000 years"];
+        // [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Show Constant RPC sent. Response: %@", response.resultCode]];
     }];
 }
 
@@ -553,11 +588,13 @@ static const int choiceId = 10005;
 }
 
 + (void)sdlex_updateTurnList:(SDLManager *)manager {
-    SDLUpdateTurnList *turnList = [[SDLUpdateTurnList alloc] init];
     SDLTurn *turn = [[SDLTurn alloc] init];
-    SDLSoftButton *button = [[SDLSoftButton alloc] init];
-    turnList.turnList = [@[turn] mutableCopy];
-    turnList.softButtons = [@[button] mutableCopy];
+    turn.navigationText = @"New Turn";
+    turn.turnIcon = [ImageManager mainGraphicImage];
+
+    SDLUpdateTurnList *turnList = [[SDLUpdateTurnList alloc] init];
+    turnList.turnList = @[turn];
+    turnList.softButtons = [SoftButtonManager alertButtons];
 
     [manager sendRequest:turnList withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
         [self.class sdlex_sendAlert:manager message:[NSString stringWithFormat:@"Update turn list RPC sent. Response: %@", response.resultCode]];
@@ -604,15 +641,22 @@ static const int choiceId = 10005;
 #pragma mark - Menu / PICS
 
 + (void)sdlex_deleteCommandWithManager:(SDLManager *)manager {
-
+    [manager sendRequest:[AddCommandManager deleteCommandWithId:1010] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLLogD(@"Delete command response: %@", response.resultCode);
+    }];
 }
 
 + (void)sdlex_deleteInteractionChoiceSetWithManager:(SDLManager *)manager {
-
+    SDLDeleteInteractionChoiceSet *deleteChoiceSet = [[SDLDeleteInteractionChoiceSet alloc] initWithId:10000];
+    [manager sendRequest:deleteChoiceSet withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLLogD(@"Delete choice set response: %@", response.resultCode);
+    }];
 }
 
 + (void)sdlex_deleteSubMenuWithManager:(SDLManager *)manager {
-
+    [manager sendRequest:[AddCommandManager deleteSubMenuCommandWithId:1001] withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLLogD(@"Delete submenu command response: %@", response.resultCode);
+    }];
 }
 
 #pragma mark - Timer

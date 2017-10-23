@@ -33,8 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
     return [[SDLDeleteCommand alloc] initWithId:commandId];
 }
 
-+ (SDLDeleteCommand *)deleteSubMenuCommandWithId:(int)commandId {
-    return [[SDLDeleteCommand alloc] initWithId:commandId];
++ (SDLDeleteSubMenu *)deleteSubMenuCommandWithId:(int)commandId {
+    return [[SDLDeleteSubMenu alloc] initWithId:commandId];
 }
 
 @end

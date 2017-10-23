@@ -64,8 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 
     SDLLifecycleConfiguration *lifecycleConfig = [self.class sdlex_setLifecycleConfigurationPropertiesOnConfiguration:[SDLLifecycleConfiguration defaultConfigurationWithAppName:SDLAppName appId:SDLAppId]];
 
-    SDLConfiguration *config = [SDLConfiguration configurationWithLifecycle:lifecycleConfig lockScreen:[SDLLockScreenConfiguration enabledConfiguration] logging:[self.class sdlex_logConfiguration]];
-    self.sdlManager = [[SDLManager alloc] initWithConfiguration:config delegate:self];
+    self.sdlManager = [[SDLManager alloc] initWithConfiguration:[self.class sdlex_setConfigurationWithLifecycleConfig:lifecycleConfig] delegate:self];
 
     [self startManager];
 }
@@ -77,8 +76,8 @@ NS_ASSUME_NONNULL_BEGIN
     if (self.sdlManager) { return; }
 
     SDLLifecycleConfiguration *lifecycleConfig = [self.class sdlex_setLifecycleConfigurationPropertiesOnConfiguration:[SDLLifecycleConfiguration debugConfigurationWithAppName:SDLAppName appId:SDLAppId ipAddress:[Preferences sharedPreferences].ipAddress port:[Preferences sharedPreferences].port]];
-    SDLConfiguration *config = [SDLConfiguration configurationWithLifecycle:lifecycleConfig lockScreen:[SDLLockScreenConfiguration enabledConfiguration] logging:[self.class sdlex_logConfiguration]];
-    self.sdlManager = [[SDLManager alloc] initWithConfiguration:config delegate:self];
+
+    self.sdlManager = [[SDLManager alloc] initWithConfiguration:[self.class sdlex_setConfigurationWithLifecycleConfig:lifecycleConfig] delegate:self];
 
     [self startManager];
 }
@@ -142,6 +141,15 @@ NS_ASSUME_NONNULL_BEGIN
     config.appType = SDLAppHMITypeMedia;
 
     return config;
+}
+
++ (SDLConfiguration *)sdlex_setConfigurationWithLifecycleConfig:(SDLLifecycleConfiguration *)lifecycleConfig {
+    SDLStreamingMediaConfiguration *streamingMediaConfig = [SDLStreamingMediaConfiguration insecureConfiguration];
+    streamingMediaConfig.window = [UIApplication sharedApplication].windows.firstObject;
+
+    return [SDLConfiguration configurationWithLifecycle:lifecycleConfig lockScreen:[SDLLockScreenConfiguration enabledConfiguration] logging:[self.class sdlex_logConfiguration]];
+
+//     return [SDLConfiguration configurationWithLifecycle:lifecycleConfig lockScreen:[SDLLockScreenConfiguration enabledConfiguration] logging:[self.class sdlex_logConfiguration] streamingMedia:streamingMediaConfig];
 }
 
 + (SDLLogConfiguration *)sdlex_logConfiguration {
