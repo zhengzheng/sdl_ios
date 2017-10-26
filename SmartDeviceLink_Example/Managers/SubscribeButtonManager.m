@@ -60,6 +60,24 @@ NS_ASSUME_NONNULL_BEGIN
     return subscribeButtons;
 }
 
++ (NSArray<SDLSubscribeButton *> *)radioSubscribeButtonsWithManager:(SDLManager *)manager {
+    NSMutableArray *subscribeButtons = [NSMutableArray array];
+    NSArray<SDLButtonName> *allTemplateSubscribeButtons = [[NSArray alloc] initWithObjects:SDLButtonNameTuneUp, SDLButtonNameTuneDown, SDLButtonNameVolumeUp, SDLButtonNameVolumeDown, SDLButtonNameEject, SDLButtonNameSource, SDLButtonNameShuffle, SDLButtonNameRepeat, nil];
+    for(SDLButtonName buttonName in allTemplateSubscribeButtons) {
+        [subscribeButtons addObject:[self.class createSubscribeButtonWithName:buttonName withManager:manager]];
+    }
+    return subscribeButtons;
+}
+
++ (NSArray<SDLSubscribeButton *> *)climateSubscribeButtonsWithManager:(SDLManager *)manager {
+    NSMutableArray *subscribeButtons = [NSMutableArray array];
+    NSArray<SDLButtonName> *allTemplateSubscribeButtons = [[NSArray alloc] initWithObjects:SDLButtonNameACMax, SDLButtonNameAC, SDLButtonNameRecirculate, SDLButtonNameFanUp, SDLButtonNameFanDown, SDLButtonNameTempUp, SDLButtonNameTempDown, SDLButtonNameDefrostMax, SDLButtonNameDefrost, SDLButtonNameDefrostRear, SDLButtonNameUpperVent, SDLButtonNameLowerVent, nil];
+    for(SDLButtonName buttonName in allTemplateSubscribeButtons) {
+        [subscribeButtons addObject:[self.class createSubscribeButtonWithName:buttonName withManager:manager]];
+    }
+    return subscribeButtons;
+}
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -3,6 +3,7 @@
 //  SmartDeviceLink-iOS
 
 #import "ProxyManager.h"
+#import "CustomLockScreenViewController.h"
 #import "ImageManager.h"
 #import "Preferences.h"
 #import "ProxyMenuManager.h"
@@ -147,9 +148,18 @@ NS_ASSUME_NONNULL_BEGIN
     SDLStreamingMediaConfiguration *streamingMediaConfig = [SDLStreamingMediaConfiguration insecureConfiguration];
     streamingMediaConfig.window = [UIApplication sharedApplication].windows.firstObject;
 
-    return [SDLConfiguration configurationWithLifecycle:lifecycleConfig lockScreen:[SDLLockScreenConfiguration enabledConfiguration] logging:[self.class sdlex_logConfiguration]];
+    return [SDLConfiguration configurationWithLifecycle:lifecycleConfig lockScreen:[self.class sdlex_lockScreenConfiguration] logging:[self.class sdlex_logConfiguration]];
 
 //     return [SDLConfiguration configurationWithLifecycle:lifecycleConfig lockScreen:[SDLLockScreenConfiguration enabledConfiguration] logging:[self.class sdlex_logConfiguration] streamingMedia:streamingMediaConfig];
+}
+
++ (SDLLockScreenConfiguration *)sdlex_lockScreenConfiguration {
+//    SDLLockScreenConfiguration *lockScreenConfig = [SDLLockScreenConfiguration enabledConfigurationWithAppIcon:[ImageManager mainGraphic] backgroundColor:[UIColor redColor]];
+
+    CustomLockScreenViewController *customLockScreenController = [[CustomLockScreenViewController alloc] init];
+    SDLLockScreenConfiguration *lockScreenConfig = [SDLLockScreenConfiguration enabledConfigurationWithViewController:customLockScreenController];
+
+    return lockScreenConfig;
 }
 
 + (SDLLogConfiguration *)sdlex_logConfiguration {

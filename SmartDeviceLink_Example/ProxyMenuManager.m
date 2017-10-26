@@ -242,6 +242,27 @@ NS_ASSUME_NONNULL_BEGIN
     [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Remove PICS" handler:^{
         [self.class sdlex_deleteInteractionChoiceSetWithManager:manager];
     }]];
+
+    // Capabilities
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Remote Control Capabilities" handler:^{
+        SDLGetSystemCapability *remoteControl = [[SDLGetSystemCapability alloc] initWithType:SDLSystemCapabilityTypeRemoteControl];
+        [manager sendRequest:remoteControl];
+    }]];
+
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Video Capabilities" handler:^{
+        SDLGetSystemCapability *videoControl = [[SDLGetSystemCapability alloc] initWithType:SDLSystemCapabilityTypeVideoStreaming];
+        [manager sendRequest:videoControl];
+    }]];
+
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Phone Capabilities" handler:^{
+        SDLGetSystemCapability *phoneControl = [[SDLGetSystemCapability alloc] initWithType:SDLSystemCapabilityTypePhoneCall];
+        [manager sendRequest:phoneControl];
+    }]];
+
+    [manager sendRequest:[AddCommandManager addCommandWithManager:manager commandId:(commandId++) menuName:@"Navigation Capabilities" handler:^{
+        SDLGetSystemCapability *phoneControl = [[SDLGetSystemCapability alloc] initWithType:SDLSystemCapabilityTypeNavigation];
+        [manager sendRequest:phoneControl];
+    }]];
 }
 
 #pragma mark - Templates menu and submenu
@@ -659,6 +680,16 @@ static const int choiceId = 10005;
     }];
 }
 
+#pragma mark - Capabilities
+
++ (void)sdlex_sendCapability:(SDLSystemCapability *)capability manager:(SDLManager *)manager {
+    SDLGetSystemCapability *capabilityRequest = [[SDLGetSystemCapability alloc] initWithType:capability];
+
+    [manager sendRequest:capabilityRequest withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLLogV(@"Send Capability %@ response: %@", capability, response.resultCode);
+    }];
+}
+
 #pragma mark - Timer
 
 + (void)sdlex_showMediaClockTimerWithManager:(SDLManager *)manager {
@@ -849,13 +880,22 @@ static const int choiceId = 10005;
 
 + (void)sdlex_createButtonPressWithManager:(SDLManager *)manager {
     SDLButtonPress* buttonPress = [[SDLButtonPress alloc] init];
-    buttonPress.moduleType = SDLModuleTypeClimate;
-    buttonPress.buttonName = SDLButtonNameFanUp;
+    buttonPress.moduleType = SDLModuleTypeRadio;
+    buttonPress.buttonName = SDLButtonNameEject;
     buttonPress.buttonPressMode = SDLButtonPressModeShort;
 
-    [manager sendRequest:buttonPress withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
-        [AlertManager alertCommand_showText:@"Button Press RPC sent" text2:[NSString stringWithFormat:@"Response %@", response] softButtons:nil duration:3 withManager:manager];
+    SDLGetInteriorVehicleData *interiorVehicleData = [[SDLGetInteriorVehicleData alloc] initAndSubscribeToModuleType:SDLModuleTypeRadio];
+
+    [manager sendRequest:interiorVehicleData withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+        SDLLogD(@"subscribed to interior vehicle data");
+        [manager sendRequest:buttonPress withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+            SDLLogD(@"button press eject radio: %@", response.resultCode);
+        }];
     }];
+
+//    [manager sendRequest:buttonPress withResponseHandler:^(__kindof SDLRPCRequest * _Nullable request, __kindof SDLRPCResponse * _Nullable response, NSError * _Nullable error) {
+//        [AlertManager alertCommand_showText:@"Button Press RPC sent" text2:[NSString stringWithFormat:@"Response %@", response] softButtons:nil duration:3 withManager:manager];
+//    }];
 }
 
 @end

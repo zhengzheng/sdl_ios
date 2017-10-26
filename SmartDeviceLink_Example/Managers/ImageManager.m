@@ -107,5 +107,9 @@
     return mainGraphicBlank;
 }
 
+#pragma mark - UIImage
++ (UIImage *)mainGraphic {
+    return [UIImage imageNamed:@"sdl_logo_green"];
+}
 
 @end

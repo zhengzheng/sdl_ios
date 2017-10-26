@@ -207,7 +207,8 @@ static Boolean isAddCommandVisible = false;
 #pragma mark Home Soft Buttons
 
 + (NSArray<SDLSoftButton *> *)homeSoftButtonsWithManager:(SDLManager *)manager {
-    return @[[self.class sdlex_softButton1WithManager:manager], [self.class sdlex_softButton2WithManager:manager], [self.class sdlex_softButton3WithManager:manager], [self.class sdlex_softButton4WithManager:manager]];
+//    return @[[self.class sdlex_softButton4WithManager:manager], [self.class sdlex_softButton3WithManager:manager]]; // Manticore
+   return @[[self.class sdlex_softButton1WithManager:manager], [self.class sdlex_softButton2WithManager:manager], [self.class sdlex_softButton3WithManager:manager], [self.class sdlex_softButton4WithManager:manager]];
 }
 
 + (SDLSoftButton *)sdlex_softButton1WithManager:(SDLManager *)manager {
@@ -251,7 +252,9 @@ static Boolean isAddCommandVisible = false;
         [ShowManager showHomeTextAndImagesWithManager:manager];
     };
 
-    SDLSoftButton *softButton = [self createSoftButtonWithText:HomeSoftButtonsToggleStateManager.sharedManager.isTextOn ? @"➖Text" : @"➕Text" softButtonId:softButtonId manager:manager handler:softButtonHandler];
+    SDLSoftButton *softButton = [self createSoftButtonWithImageName:HomeSoftButtonsToggleStateManager.sharedManager.areImagesVisible ? [ImageManager mainGraphicImageName] : [ImageManager mainGraphicBlankImageName] softButtonId:softButtonId manager:manager handler:softButtonHandler];
+
+//    SDLSoftButton *softButton = [self createSoftButtonWithText:HomeSoftButtonsToggleStateManager.sharedManager.isTextOn ? @"➖Text" : @"➕Text" softButtonId:softButtonId manager:manager handler:softButtonHandler];
 
     return softButton;
 }
@@ -281,11 +284,29 @@ static Boolean isAddCommandVisible = false;
                     [AlertManager alertCommand_showText:@"Error uploading some images" softButtons:nil duration:3 withManager:manager];
                 }
             }];
+
+//            [manager.fileManager uploadFiles:[ImageManager allImages] progressHandler:^BOOL(SDLFileName * _Nonnull fileName, float uploadPercentage, NSError * _Nullable error) {
+//                SDLLogD(@"Image %@ uploaded successfully", fileName);
+//                return YES;
+//            } completionHandler:^(NSError * _Nullable error) {
+//                if (error == nil) {
+//                    SDLLogD(@"All images uploaded successfully");
+//                    HomeSoftButtonsToggleStateManager.sharedManager.imagesVisible = !HomeSoftButtonsToggleStateManager.sharedManager.imagesVisible;
+//                    [ShowManager showHomeTextAndImagesWithManager:manager];
+//                } else {
+//                    SDLLogW(@"Some or all images were not uploaded successfully (%@)", error);
+//                    [AlertManager alertCommand_showText:@"Error uploading some images" softButtons:nil duration:3 withManager:manager];
+//                }
+//            }];
         }
     };
 
-    // FIXME: add "loading..." to main text field?
-    SDLSoftButton *softButton = [self createSoftButtonWithText:HomeSoftButtonsToggleStateManager.sharedManager.areImagesVisible ? @"➖Icons" : @"➕Icons" softButtonId:softButtonId manager:manager handler:softButtonHandler];
+    SDLSoftButton *softButton = [self createSoftButtonWithImageName:HomeSoftButtonsToggleStateManager.sharedManager.areImagesVisible ?  [ImageManager hexagonOnImageName] : [ImageManager mainGraphicBlankImageName] softButtonId:softButtonId manager:manager handler:softButtonHandler];
+
+    // [self createSoftButtonWithText:HomeSoftButtonsToggleStateManager.sharedManager.areImagesVisible ? @"➖Icons" : @"➕Icons" softButtonId:softButtonId manager:manager handler:softButtonHandler];
+
+    // TODO: add "loading..." to main text field?
+//    SDLSoftButton *softButton = [self createSoftButtonWithText:HomeSoftButtonsToggleStateManager.sharedManager.areImagesVisible ? @"➖Icons" : @"➕Icons" softButtonId:softButtonId manager:manager handler:softButtonHandler];
 
     return softButton;
 }

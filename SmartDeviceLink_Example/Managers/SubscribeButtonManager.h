@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSArray<SDLSubscribeButton *> *)mediaTemplateSubscribeButtonsWithManager:(SDLManager *)manager;
 + (NSArray<SDLUnsubscribeButton *> *)mediaTemplateUnSubscribeButtons;
 + (NSArray<SDLSubscribeButton *> *)presetSubscribeButtonsWithManager:(SDLManager *)manager;
++ (NSArray<SDLSubscribeButton *> *)radioSubscribeButtonsWithManager:(SDLManager *)manager;
++ (NSArray<SDLSubscribeButton *> *)climateSubscribeButtonsWithManager:(SDLManager *)manager;
 
 @end
 

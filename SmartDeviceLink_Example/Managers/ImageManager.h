@@ -26,4 +26,6 @@
 + (NSString *)mainGraphicImageName;
 + (NSString *)mainGraphicBlankImageName;
 
++ (UIImage *)mainGraphic;
+
 @end
