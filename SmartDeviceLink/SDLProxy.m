@@ -338,7 +338,19 @@ const int POLICIES_CORRELATION_ID = 65535;
     if ([functionName isEqualToString:@"SystemRequestResponse"]) {
         [self handleSystemRequestResponse:newMessage];
     }
-
+    
+    // modified by zhengzheng @1/16/2017
+    if ([functionName isEqualToString:@"OnTouchEvent"]) {
+        SDLOnTouchEvent *event = (SDLOnTouchEvent *)newMessage;
+        for (id<SDLProxyListener> listener in self.proxyListeners) {
+            if ([listener respondsToSelector:@selector(onOnTouchEvent:)]) {
+                [listener onOnTouchEvent:event];
+            }
+        }
+        return;
+    }
+    // modified by zhengzheng @1/16/2017
+    
     // Formulate the name of the method to call and invoke the method on the delegate(s)
     NSString *handlerName = [NSString stringWithFormat:@"on%@:", functionName];
     SEL handlerSelector = NSSelectorFromString(handlerName);
