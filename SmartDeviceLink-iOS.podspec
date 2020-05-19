@@ -12,7 +12,7 @@ s.dependency     'BiSON', '~> 1.0'
 s.source_files = "SmartDeviceLink/*.{h,m}"
 s.requires_arc = true
 s.resource_bundles = { 'SmartDeviceLink' => ['SmartDeviceLink/Assets/**/*', 'SmartDeviceLink/iOS 7 Assets/*'] }
-s.pod_target_xcconfig = { 'HEADER_SEARCH_PATHS' => '$(inherited) "$(SRCROOT)/BiSON/src" "$(SRCROOT)/_Prebuild/BiSON/src"' }
+s.pod_target_xcconfig = { 'HEADER_SEARCH_PATHS' => '$(inherited) "$(SRCROOT)/BiSON/src" "$(PODS_ROOT)/_Prebuild/BiSON/src"' }
 s.public_header_files = [
 'SmartDeviceLink/SmartDeviceLink.h',
 'SmartDeviceLink/SDLJingle.h',
