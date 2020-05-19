@@ -13,6 +13,7 @@ s.requires_arc = true
 s.resource_bundles = { 'SmartDeviceLink' => ['SmartDeviceLink/Assets/**/*'] }
 
 s.default_subspecs = 'Default'
+s.pod_target_xcconfig = { 'HEADER_SEARCH_PATHS' => '$(inherited) "$(SRCROOT)/BiSON/src" "$(SRCROOT)/_Prebuild/BiSON/src"' }
 
 s.subspec 'Default' do |ss|
 ss.source_files = 'SmartDeviceLink/*.{h,m}'
